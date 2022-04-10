@@ -4,11 +4,26 @@ public interface View {
 	//프로그램에 존재할 변수를 만들 것. 실제론 상수이지만
 	
 	int HOME = 1;
+	int ADMIN_HOME = 11;
+	int MEM_HOME = 12;
 	int JOIN = 2;
 	int LOGIN = 3;
-	int BOARD_LIST = 4;
-	int BOARD_READ = 5;
-	int BOARD_INSERT = 6;
-	int BOARD_UPDATE = 7;
-	int BOARD_DELETE = 8;
+	int MENU = 4;
+	int MENU_BREAD = 41;
+	int MENU_COOKIE = 42;
+	int MENU_CAKE = 43;
+	int BOARD_LIST = 5;
+	int BOARD_READ = 51;
+	int BOARD_INSERT = 52;
+	int BOARD_UPDATE = 53;
+	int BOARD_DELETE = 54;
+	int MYPAGE = 6;
+	int MYPAGE_INFO = 61;
+	int MYPAGE_EDIT = 62;
+	int MYPAGE_PURCHASE = 63;
+	int MYPAGE_RSV = 64;
+	int MYPAGE_REVIEW = 65;
+	int RSV = 6;
+	int MANAGEMENT = 7;
+	int 
 }
