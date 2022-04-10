@@ -1,5 +1,19 @@
 package service;
 
 public class BoardService {
+	
+	//싱글톤 패턴
+	private BoardService() {
+			
+	}
+	private static BoardService instance;
+	public static BoardService getInstance() { 
+		if(instance == null) {
+			instance = new BoardService();
+		}  
+		return instance;
+	}
+		
+		
 
 }
