@@ -7,6 +7,7 @@ public interface View {
 	int ADMIN_HOME = 11;
 	int MEM_HOME = 12;
 	int JOIN = 2;
+	int JOIN_AGREE = 21;
 	int LOGIN = 3;
 	int MENU = 4;
 	int MENU_BREAD = 41;
@@ -25,5 +26,10 @@ public interface View {
 	int MYPAGE_REVIEW = 65;
 	int RSV = 6;
 	int MANAGEMENT = 7;
-	int 
+	int MNG_PROD = 71;
+	int MNG_RSV = 72;
+	int MNG_BOARD = 73;
+	int MNG_REVIEW = 74;
+	int MNG_ORDER = 75;
+	int MNG_SALES = 76;
 }
