@@ -1,5 +1,19 @@
 package dao;
 
 public class BoardDao {
+	
+	//싱글톤 패턴
+	private BoardDao() {
+					
+	}
+	private static BoardDao instance;
+	public static BoardDao getInstance() { 
+		if(instance == null) {
+			instance = new BoardDao();
+		}
+		return instance;
+	}
+	
+	
 
 }
