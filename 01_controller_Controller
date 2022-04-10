@@ -1,9 +1,73 @@
 package controller;
 
+import dao.BoardDao;
+import service.BoardService;
+import service.UserService;
+import util.ScanUtil;
+import util.View;
+
 public class Controller {
 
 	public static void main(String[] args) {
 
+		new Controller().start();
+		
+	}
+
+/////////////////////////////////////////////////////////////////////////////////
+	
+	//전역변수로 불러오기
+	private static UserService userService = UserService.getInstance();
+	private static BoardService boardService = BoardService.getInstance();
+	private static BoardDao boardDao = BoardDao.getInstance();
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	private void start() {
+		int view = View.HOME;
+		
+		while(true) {
+			System.out.println("\t\tSsong's Bakery Cafe\n\n");
+			switch(view) {
+			case View.HOME: view = home(); break; //로그인 이전(비회원) 홈
+			case View.MEM_HOME: view = memHome(); break; //로그인(회원) 홈
+			case View.ADMIN_HOME: view = adminHome(); break; //로그인(관리자) 홈
+			
+			}
+		}
+		
+	}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+	//관리자용 홈
+	private int adminHome() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	//회원용 홈
+	private int memHome() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	//비회원용 홈
+	private int home() {
+		System.out.println("[1.로그인 2.메뉴 3.게시판 4.예약(케이크/단체주문) 9.회원가입 0.프로그램 종료]");
+		int input =ScanUtil.nextInt2();
+		switch(input) {
+		case 1:return View.LOGIN;
+		case 2:return View.MENU;
+		case 3:return View.BOARD_LIST;
+		case 4:return View.RSV;
+		case 9:return View.JOIN_AGREE;
+		case 0:
+			System.out.println("프로그램을 종료합니다.");
+			System.exit(0);
+		}
+		return View.HOME;
 	}
 
 }
