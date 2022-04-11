@@ -1,5 +1,11 @@
 package dao;
 
+import java.util.List;
+import java.util.Map;
+
+import util.JDBCUtil;
+import util.View;
+
 public class BoardDao {
 	
 	//싱글톤 패턴
@@ -13,6 +19,20 @@ public class BoardDao {
 		}
 		return instance;
 	}
+	
+	public List<Map<String, Object>> allBoardList(){
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, ADMIN_NN, BOARD_DATE FROM B_BOARD";
+		return JDBCUtil.selectList(sql);
+	}
+	
+	public int readNotice(List<Map<String, Object>> noticeList) {
+		
+		
+		
+		return View.BOARD_NOTICE;
+	}
+	
+	
 	
 	
 
