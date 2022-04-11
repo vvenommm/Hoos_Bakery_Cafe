@@ -20,20 +20,44 @@ public class BoardDao {
 		return instance;
 	}
 	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	//모든 글 출력
 	public List<Map<String, Object>> allBoardList(){
 		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, ADMIN_NN, BOARD_DATE FROM B_BOARD";
 		return JDBCUtil.selectList(sql);
 	}
 	
-	public int readNotice(List<Map<String, Object>> noticeList) {
-		
-		
-		
+	public int read(List<Map<String, Object>> boardList) {
 		return View.BOARD_NOTICE;
 	}
 	
 	
+/////////////////////////////////////////////////////////////////////////////////
 	
+	//공지사항 출력
+	public List<Map<String, Object>> noticeList(){
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, ADMIN_NN, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 1";
+		return JDBCUtil.selectList(sql);
+	}
+	
+	public int readNotice(List<Map<String, Object>> noticeList) {
+		return View.BOARD_NOTICE;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	//이벤트 출력
+	public List<Map<String, Object>> eventList(){
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, ADMIN_NN, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 2";
+		return JDBCUtil.selectList(sql);
+	}
+	
+	public int readEvent(List<Map<String, Object>> eventList) {
+		return View.BOARD_NOTICE;
+	}
 	
 
 }
