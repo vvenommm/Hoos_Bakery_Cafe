@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import dao.BoardDao;
+import util.ScanUtil;
+import util.View;
 
 public class BoardService {
 	
@@ -44,7 +46,117 @@ public class BoardService {
 		}
 		System.out.println("└─────────────────────┘");
 		
-		return 0;
+		System.out.println(" [1.글읽기 2.공지사항만 보기 3.이벤트만 보기 0.홈으로]");
+		int input = ScanUtil.nextInt2();
+		switch(input) {
+		case 1:
+			return View.BOARD_READ;
+		case 2:
+			return View.BOARD_NOTICE;
+		case 3:
+			return View.BOARD_EVENT;
+		case 0:
+			//로그인 했을 때, 로그인 안 했을 때 갈 홈 구분해주기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			return View.HOME;
 		}
+		
+		return View.HOME;
+		}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+
+	public int noticeList() {
+		List<Map<String, Object>> noticeList = boardDao.noticeList();
+		
+		System.out.println("┌─────────────────────┐");
+		System.out.println("번호\t제목\t작성자\t작성일");
+		System.out.println(" ──────────────────────");
+		for(Map<String, Object> board : noticeList) {
+			System.out.print(board.get("BOARD_NO") + "\t");
+			System.out.print(board.get("BOARD_TITLE") + "\t");
+			System.out.print(board.get("ADMIN_NN") + "\t");
+			System.out.println(board.get("BOARD_DATE"));
+		}
+		System.out.println("└─────────────────────┘");
+		
+		System.out.println("\n\n[1. ");
+		return View.BOARD_LIST;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+
+	public int eventList() {
+		List<Map<String, Object>> eventList = boardDao.eventList();
+		
+		System.out.println("┌─────────────────────┐");
+		System.out.println("번호\t제목\t작성자\t작성일");
+		System.out.println(" ──────────────────────");
+		for(Map<String, Object> board : eventList) {
+			System.out.print(board.get("BOARD_NO") + "\t");
+			System.out.print(board.get("BOARD_TITLE") + "\t");
+			System.out.print(board.get("ADMIN_NN") + "\t");
+			System.out.println(board.get("BOARD_DATE"));
+		}
+		System.out.println("└─────────────────────┘");
+		
+		System.out.println("\n\n[1. ");
+		return View.BOARD_LIST;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+
+	public int readPost() {
+		System.out.println("조회하려는 글 번호를 입력해주세요. : ");
+		int boardNo = ScanUtil.nextInt2();
+		Map<String, Object> board = boardDao.readPost(boardNo);
+		
+		System.out.println("┌─────────────────────┐");
+		System.out.println("글번호 : " + board.get("BOARD_NO"));
+		System.out.println(board.get("BOARD_TITLE"));
+		System.out.println(" ──────────────────────");
+		System.out.print("작성자 : " + board.get("ADMIN_NN") + "\t작성일 : " + board.get("BOARD_DATE") + "\n\n");
+		System.out.println(board.get("BOARD_CONTENT"));
+		System.out.println("└─────────────────────┘");
+		
+		System.out.println("\n\n\n[9.뒤로가기 0.홈으로]");
+		int input = ScanUtil.nextInt2();
+		switch(input) {
+		case 9:
+			return View.BOARD_LIST;
+		case 0:
+			return View.HOME;
+		}
+		return View.HOME;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+
+	public int editPost() {
+		return 0;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+
+	public int deletePost() {
+		return 0;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+
+	public int posting() {
+		return View.BOARD_LIST;
+	}
 
 }
