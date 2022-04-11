@@ -33,6 +33,10 @@ public class Controller {
 			case View.HOME: view = home(); break; //로그인 이전(비회원) 홈
 			case View.MEM_HOME: view = memHome(); break; //로그인(회원) 홈
 			case View.ADMIN_HOME: view = adminHome(); break; //로그인(관리자) 홈
+			case View.BOARD_LIST: view = boardService.boardList(); break; //게시판 홈
+			case View.BOARD_NOTICE: view = boardService.boardList(); break; //게시판 홈
+			case View.BOARD_EVENT: view = boardService.boardList(); break; //게시판 홈
+			
 			
 			}
 		}
