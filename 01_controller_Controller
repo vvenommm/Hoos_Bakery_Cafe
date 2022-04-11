@@ -34,12 +34,12 @@ public class Controller {
 			case View.MEM_HOME: view = memHome(); break; //로그인(회원) 홈
 			case View.ADMIN_HOME: view = adminHome(); break; //로그인(관리자) 홈
 			case View.BOARD_LIST: view = boardService.boardList(); break; //게시판 홈
-			case View.BOARD_NOTICE: view = boardService.boardList(); break; //공지 모음
-			case View.BOARD_EVENT: view = boardService.boardList(); break; //이벤트 모음
-			case View.BOARD_READ: view = boardService.boardList(); break; //글 읽기
-			case View.BOARD_EDIT: view = boardService.boardList(); break; //글 수정
-			case View.BOARD_DELETE: view = boardService.boardList(); break; //글 삭제
-			case View.BOARD_POSTING: view = boardService.boardList(); break; //글 등록
+			case View.BOARD_NOTICE: view = boardService.noticeList(); break; //공지 모음
+			case View.BOARD_EVENT: view = boardService.eventList(); break; //이벤트 모음
+			case View.BOARD_READ: view = boardService.readPost(); break; //글 읽기
+			case View.BOARD_EDIT: view = boardService.editPost(); break; //글 수정
+			case View.BOARD_DELETE: view = boardService.deletePost(); break; //글 삭제
+			case View.BOARD_POSTING: view = boardService.posting(); break; //글 등록
 
 			
 			
