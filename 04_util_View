@@ -1,35 +1,49 @@
 package util;
 
 public interface View {
-	//프로그램에 존재할 변수를 만들 것. 실제론 상수이지만
+	//출력 화면
 	
-	int HOME = 1;
-	int ADMIN_HOME = 11;
-	int MEM_HOME = 12;
-	int JOIN = 2;
-	int JOIN_AGREE = 21;
-	int LOGIN = 3;
-	int MENU = 4;
-	int MENU_BREAD = 41;
-	int MENU_COOKIE = 42;
-	int MENU_CAKE = 43;
-	int BOARD_LIST = 5;
-	int BOARD_READ = 51;
-	int BOARD_INSERT = 52;
-	int BOARD_UPDATE = 53;
-	int BOARD_DELETE = 54;
-	int MYPAGE = 6;
-	int MYPAGE_INFO = 61;
-	int MYPAGE_EDIT = 62;
-	int MYPAGE_PURCHASE = 63;
-	int MYPAGE_RSV = 64;
-	int MYPAGE_REVIEW = 65;
-	int RSV = 6;
-	int MANAGEMENT = 7;
-	int MNG_PROD = 71;
-	int MNG_RSV = 72;
-	int MNG_BOARD = 73;
-	int MNG_REVIEW = 74;
-	int MNG_ORDER = 75;
-	int MNG_SALES = 76;
+	int HOME = 1; //로그인 이전(비회원) 홈
+	int MEM_HOME = 11;//로그인(회원) 홈
+	int ADMIN_HOME = 12; //로그인(관리자) 홈
+	
+	//은태
+	int JOIN = 2; //회원가입
+	int JOIN_AGREE = 21; //회원가입 시 개인정보 수집 및 동의 화면
+	
+	int LOGIN = 3; //로그인 화면
+	
+	//은실
+	int MENU = 4; //메뉴 화면
+	int MENU_BREAD = 41; //빵 메뉴 목록
+	int MENU_COOKIE = 42; //쿠키 메뉴 목록
+	int MENU_CAKE = 43; //케이크 메뉴 목록
+	
+	//정후
+	int BOARD_LIST = 5; //게시판 목록
+	int BOARD_NOTICE = 51; //공지사항 글목록
+	int BOARD_EVENT = 52; //이벤트 글목록
+	int BOARD_READ = 53; //특정 글 조회 화면
+	int BOARD_EDIT = 531; //특정 글 조회 후 수정
+	int BOARD_DELETE = 532; //특정 글 조회 후 삭제
+	int BOARD_POSTING = 54; //게시판에 글 등록
+	
+	int MYPAGE = 6; //로그인(회원) 후 마이페이지 화면
+	int MYPAGE_INFO = 61; //내정보 보기 화면
+	int MYPAGE_EDIT = 611; //내정보 수정 화면
+	int MYPAGE_PURCHASE = 62; //내 구매 내역 화면
+	int MYPAGE_RSV = 63; //예약 현황 화면
+	int MYPAGE_REVIEW = 64; //내 한줄평 화면
+	
+	int RSV = 6; //예약하는 화면
+	
+	int MANAGEMENT = 7; //로그인(관리자) 후 관리자 페이지
+	int MNG_PROD = 71; //메뉴 관리
+	int MNG_RSV = 72; //예약 관리
+	int MNG_BOARD = 73; //게시판 관리
+	int MNG_REVIEW = 74; //한줄평 관리
+	int MNG_ORDER = 75; //생산량 관리
+	int MNG_SALES = 76; //매출 관리
+	
+	//04.10 정후: 우리 최소 이만큼이 필요하고 작업하다보면 더 생길 수도 있어요
 }
