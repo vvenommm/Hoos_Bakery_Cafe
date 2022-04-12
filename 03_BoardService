@@ -26,6 +26,7 @@ public class BoardService {
 	
 	
 	private static BoardDao boardDao = BoardDao.getInstance();
+	private static UserService userService = UserService.getInstance();
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
@@ -124,13 +125,37 @@ public class BoardService {
 		System.out.println(board.get("BOARD_CONTENT"));
 		System.out.println("└─────────────────────┘");
 		
-		System.out.println("\n\n\n[9.뒤로가기 0.홈으로]");
-		int input = ScanUtil.nextInt2();
-		switch(input) {
-		case 9:
-			return View.BOARD_LIST;
-		case 0:
-			return View.HOME;
+		if (userService.LoginMember.get("MEM_ID").equals("ADMIN_ID")){
+			System.out.println("\n\n\n[1.수정 2.삭제 9.뒤로가기 0.홈으로");
+			int input = ScanUtil.nextInt2();
+			
+			switch(input) {
+			case 1:
+				editPost(board);
+			case 2:
+				deletePost(board);
+			case 9:
+				return View.BOARD_LIST;
+			case 0:
+				return View.ADMIN_HOME;
+			}
+		}else if(!userService.LoginMember.get("MEM_ID").equals(null)){
+			System.out.println("\n\n\n[9.뒤로가기 0.홈으로]");
+			int input = ScanUtil.nextInt2();
+			switch(input) {
+			case 9:
+				return View.BOARD_LIST;
+			case 0:
+				return View.MEM_HOME;
+			}else {
+				System.out.println("\n\n\n[9.뒤로가기 0.홈으로]");
+				int input = ScanUtil.nextInt2();
+				switch(input) {
+				case 9:
+					return View.BOARD_LIST;
+				case 0:
+					return View.HOME;
+			}
 		}
 		return View.HOME;
 	}
@@ -138,25 +163,32 @@ public class BoardService {
 	
 /////////////////////////////////////////////////////////////////////////////////
 
+	//관리자의 글 수정, 삭제, 작성
+	
 
-	public int editPost() {
-		return 0;
+	//관리자 글 수정
+	public int editPost(Map<String, Object> board) {
+		
+		return View.BOARD_LIST;
 	}
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
 
 
-	public int deletePost() {
-		return 0;
+	//관리자 글 삭제
+	public int deletePost(Map<String, Object> board) {
+		return View.BOARD_LIST;
 	}
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
 
 
+	//관리자 글 작성
 	public int posting() {
 		return View.BOARD_LIST;
 	}
 
 }
+
