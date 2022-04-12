@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import dao.BoardDao;
-import k_jdbc.JDBCUtil;
+import util.JDBCUtil;
 import util.ScanUtil;
 import util.View;
 
@@ -127,41 +127,55 @@ public class BoardService {
 		System.out.println("└─────────────────────┘");
 		
 		if (userService.LoginMember.get("MEM_ID").equals("ADMIN_ID")){
+			//관리자 로그인
 			System.out.println("\n\n\n[1.수정 2.삭제 9.뒤로가기 0.홈으로");
 			int input = ScanUtil.nextInt2();
 			
 			switch(input) {
-			case 1:
-				int a = editPost(board);
-				if(0 < a) {
+			case 1: //1.수정 선택 시
+				int editResult = editPost(board); //수정 완료면 1, 실패면 0
+				if(0 < editResult) {
 					System.out.println("수정 완료!");
-					return View.BOARD_LIST;
+					return View.BOARD_LIST; //수정 완료 후 게시판 목록으로
 				}else {
-					System.out.println("수정 실패");
-					return View.BOARD_READ;
+					System.out.println("수정 실패!");
+					return View.BOARD_READ; //수정 실패 후 다시 글 읽기로
 				}
-			case 2:
-				deletePost(board);
-			case 9:
+			case 2: //2.삭제 선택 시
+				int delResult = deletePost(board);
+				if(delResult == 0) {
+					System.out.println("삭제 완료!");
+					return View.BOARD_LIST;
+				}else if(delResult == 1) {
+					System.out.println("삭제 실패!");
+					return View.BOARD_READ;
+				}else if(delResult == 2) {
+					System.out.println("게시판 목록으로 돌아갑니다.");
+					return  View.BOARD_LIST;
+				}
+			case 9: //9.뒤로가기 선택 시 -> 전체 게시판
 				return View.BOARD_LIST;
-			case 0:
+			case 0: //0.관리자 홈으로 선택 시
 				return View.ADMIN_HOME;
 			}
 		}else if(!userService.LoginMember.get("MEM_ID").equals(null)){
+			//회원 로그인
 			System.out.println("\n\n\n[9.뒤로가기 0.홈으로]");
 			int input = ScanUtil.nextInt2();
 			switch(input) {
-			case 9:
-				return View.BOARD_LIST;
-			case 0:
-				return View.MEM_HOME;
+				case 9: //9.뒤로가기 선택 시
+					return View.BOARD_LIST;
+				case 0: //0.회원 홈으로 선택 시
+					return View.MEM_HOME;
+				}
 			}else {
+				//비회원
 				System.out.println("\n\n\n[9.뒤로가기 0.홈으로]");
 				int input = ScanUtil.nextInt2();
 				switch(input) {
-				case 9:
+				case 9: //9.뒤로가기 선택 시
 					return View.BOARD_LIST;
-				case 0:
+				case 0: //0.일반 홈으로 선택 시
 					return View.HOME;
 			}
 		}
@@ -181,10 +195,8 @@ public class BoardService {
 		System.out.println("내용을 새로 입력해주세요. : ");
 		String content = ScanUtil.nextLine();
 		
-		boardDao.editPost(title, content, board);
-		
-		
-		return View.BOARD_LIST;
+		int result = boardDao.editPost(title, content, board); //글 수정 메소드
+		return result;
 	}
 	
 	
@@ -193,7 +205,15 @@ public class BoardService {
 
 	//관리자 글 삭제
 	public int deletePost(Map<String, Object> board) {
-		return View.BOARD_LIST;
+		int result = 0;
+		System.out.println("정말 삭제하시겠습니까?\n[1.네 2.아니오]");
+		int input = ScanUtil.nextInt2();
+		if(input == 1) {
+			result = boardDao.deletePost(board);
+		}else {
+			return 2;
+		}
+		return result;
 	}
 	
 	
@@ -206,4 +226,5 @@ public class BoardService {
 	}
 
 }
+
 
