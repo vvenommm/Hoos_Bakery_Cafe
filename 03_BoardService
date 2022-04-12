@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import dao.BoardDao;
+import k_jdbc.JDBCUtil;
 import util.ScanUtil;
 import util.View;
 
@@ -131,7 +132,14 @@ public class BoardService {
 			
 			switch(input) {
 			case 1:
-				editPost(board);
+				int a = editPost(board);
+				if(0 < a) {
+					System.out.println("수정 완료!");
+					return View.BOARD_LIST;
+				}else {
+					System.out.println("수정 실패");
+					return View.BOARD_READ;
+				}
 			case 2:
 				deletePost(board);
 			case 9:
@@ -168,6 +176,13 @@ public class BoardService {
 
 	//관리자 글 수정
 	public int editPost(Map<String, Object> board) {
+		System.out.println("제목을 새로 입력해주세요. : ");
+		String title = ScanUtil.nextLine();
+		System.out.println("내용을 새로 입력해주세요. : ");
+		String content = ScanUtil.nextLine();
+		
+		boardDao.editPost(title, content, board);
+		
 		
 		return View.BOARD_LIST;
 	}
