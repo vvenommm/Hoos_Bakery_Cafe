@@ -28,7 +28,7 @@ public class BoardDao {
 	
 	//모든 글 출력
 	public List<Map<String, Object>> allBoardList(){
-		String sql = "SELECT BOARD_NO, BOARD_TITLE, ADMIN_NN, BOARD_DATE FROM B_BOARD";
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -42,7 +42,7 @@ public class BoardDao {
 	
 	//공지사항 출력
 	public List<Map<String, Object>> noticeList(){
-		String sql = "SELECT BOARD_NO, BOARD_TITLE, ADMIN_NN, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 1";
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 1";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -56,7 +56,7 @@ public class BoardDao {
 	
 	//이벤트 출력
 	public List<Map<String, Object>> eventList(){
-		String sql = "SELECT BOARD_NO, BOARD_TITLE, ADMIN_NN, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 2";
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 2";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -70,7 +70,7 @@ public class BoardDao {
 	
 	//글읽기
 	public Map<String, Object> readPost(int boardNo){
-		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, ADMIN_NN, BOARD_DATE FROM B_BOARD WHERE BOARD_NO = ?";
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_NO = ?";
 		List<Object> param = new ArrayList<Object>();
 
 		param.add(boardNo);
@@ -78,7 +78,21 @@ public class BoardDao {
 	}
 	
 	
+/////////////////////////////////////////////////////////////////////////////////
 
 	
+	//글 수정
+	public Map<String, Object> editPost(String title, String content, Map<String, Object> board){
+		String sql = "UPDATE TABLE B_BOARD SET BOARD_TITLE = ?, BOARD_CONTENT = ? FROM B_BOARD WHERE BOARD_NO = ?";
+		List<Object> param = new ArrayList<Object>();
 
+		board.put("BOARD_TITLE", title);
+		board.put("BOARD_CONTENT", content);
+		
+		param.add(board);
+		return JDBCUtil.selectOne(sql, param);
+	}
+	
+	
+	
 }
