@@ -160,10 +160,65 @@ public class ManagementService {
 
 
 		/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//MNG_ORDER 예약 관리 홈
+		public int mngOrder() {
+			System.out.println("<예약 목록>");
+			System.out.println("예약 번호\t수령일\t비고\t예약자");
+			System.out.println("--------------------------------");
+			List<Map<String, Object>> list = mngDao.aprvedOrder();
+			for(int i = 0; i < list.size(); i++) {//앞으로 가져갈 주문들
+				for(Map<String, Object> order : list) {
+					System.out.print(order.get("RSV_OD") + "\t");
+					System.out.print(order.get("RSV_PICKUP") + "\t");
+					System.out.print(order.get("RSV_ETC") + "\t");
+					System.out.println(order.get("MEM_ID") + "\t");
+				}
+			}
+			System.out.println("--------------------------------");
+			System.out.println("[1.조회 2.예약 승인하기 3. 3.거절한 주문 목록 보기 9.뒤로가기 0.홈으로].");
+			int input = ScanUtil.nextInt();
+			switch (input) {
+			case 1:
+				mngReadOrder();
+				break;
+				
+			case 2:
+				Map<String, Object> map = new HashMap<String, Object>();
+				
+				System.out.println("제목 : ");
+				String title = ScanUtil.nextLine();
+				map.put("TITLE", title);
+				System.out.println("내용 : ");
+				String contents = ScanUtil.nextLine();
+				map.put("CONTENTS", contents);
+				
+				return View.BOARD_LIST;
+				
+			case 0:
+				UserService.LoginMember = null;
+				return View.HOME;
+			}
+			
+			return 0;
+		}
+
+		
+		/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		private void mngReadOrder() {
+			System.out.println("예약 목록에서 조회하려는 주문 번호를 입력해주세요.\n->");
+			int input = ScanUtil.nextInt();
+		}
+
+
+		/////////////////////////////////////////////////////////////////////////////////
 
 		
 		//MNG_ORDER 예약주문 관리
-		public int mngOrder() {
+		public int mngOrderAprv() {
 			System.out.println("<승인을 기다리는 예약 목록>");
 			System.out.println("예약 번호\t예약한 메뉴\t수량\t수령일\t예약자\t승인");
 			System.out.println("--------------------------------");
