@@ -1,0 +1,28 @@
+package dao;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import util.JDBCUtil;
+
+public class ManagementDao {
+	
+	//싱글톤 패턴
+	private ManagementDao() {
+			
+	}
+	private static ManagementDao instance; 
+	public static ManagementDao getInstance() { 
+		if(instance == null) {
+			instance = new ManagementDao();
+		}
+		return instance;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+
+
+}
