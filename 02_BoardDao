@@ -84,13 +84,15 @@ public class BoardDao {
 	
 		//글 수정
 		public int editPost(String title, String content, Map<String, Object> board){
-			String sql = "UPDATE TABLE B_BOARD SET BOARD_TITLE = ?, BOARD_CONTENT = ? FROM B_BOARD WHERE BOARD_NO = ?";
+			String sql = "UPDATE B_BOARD SET BOARD_TITLE = ?, BOARD_CONTENT = ? WHERE BOARD_NO = ?";
 			List<Object> param = new ArrayList<Object>();
-
-			board.put("BOARD_TITLE", title);
-			board.put("BOARD_CONTENT", content);
 			
-			param.add(board);
+			int num = (int)board.get("BOARD_NO");
+			
+			param.add(title);
+			param.add(content);
+			param.add(num);
+			
 			return JDBCUtil.update(sql, param);
 		}
 		
@@ -100,7 +102,7 @@ public class BoardDao {
 		
 		//글 삭제
 		public int deletePost(Map<String, Object> board) {
-			String sql = "DELETE FROM TABLE B_BOARD WHERE BOARD_NO = ?";
+			String sql = "DELETE FROM B_BOARD WHERE BOARD_NO = ?";
 			List<Object> param = new ArrayList<Object>();
 			
 			param.add(board.get("BOARD_NO"));
