@@ -1,5 +1,10 @@
 package service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import dao.ManagementDao;
 import util.ScanUtil;
 import util.View;
@@ -29,7 +34,7 @@ public class ManagementService {
 		
 		
 		public int mngList() {
-			System.out.println("[1.상품 관리 2.예약 관리 3.한줄평 관리 4.생산량 관리 5.매출 관리 9.뒤로가기 0.로그아웃]");
+			System.out.println("[1.메뉴 관리 2.예약 관리 3.한줄평 관리 4.생산량 관리 5.매출 관리 9.뒤로가기 0.로그아웃]");
 			int input =ScanUtil.nextInt2();
 			switch(input) {
 			case 1:return View.MNG_PROD; //메뉴 관리
@@ -48,23 +53,87 @@ public class ManagementService {
 		/////////////////////////////////////////////////////////////////////////////////
 
 		
-		//MNG_PROD 메뉴 관리
+		//MNG_PROD 메뉴 관리 - 활성 상태도 넣기
 		public int mngProd() {
-			System.out.println("[1.메뉴 추가하기 2.메뉴 수정하기 3.메뉴 삭제하기 0.뒤로가기]");
+			List<Map<String, Object>> list = mngDao.breadList();
+			
+			System.out.println("-------");
+			System.out.println("이름\t가격\t활성상태");
+			
+			for(int i = 0; i < list.size(); i++) {//빵
+				for(Map<String, Object> menu : list) {
+					System.out.print(menu.get("MENU_NAME") + "\t");
+					System.out.print(menu.get("MENU_PRICE") + "\t");
+//					System.out.println(menu.get("MENU_ACTIVE"));
+				}
+			}
+
+			list = mngDao.cookieList();
+			for(int i = 0; i < list.size(); i++) {//쿠키
+				for(Map<String, Object> menu : list) {
+					System.out.print(menu.get("MENU_NAME") + "\t");
+					System.out.print(menu.get("MENU_PRICE") + "\t");
+//					System.out.println(menu.get("MENU_ACTIVE"));
+				}
+			}
+			
+			list = mngDao.cakeList();
+			for(int i = 0; i < list.size(); i++) {//케이크
+				for(Map<String, Object> menu : list) {
+					System.out.print(menu.get("MENU_NAME") + "\t");
+					System.out.print(menu.get("MENU_PRICE") + "\t");
+//					System.out.println(menu.get("MENU_ACTIVE"));
+				}
+			}
+			
+			list = mngDao.drinkList();
+			for(int i = 0; i < list.size(); i++) {//음료
+				for(Map<String, Object> menu : list) {
+					System.out.print(menu.get("MENU_NAME") + "\t");
+					System.out.print(menu.get("MENU_PRICE") + "\t");
+//					System.out.println(menu.get("MENU_ACTIVE"));
+				}
+			}
+			
+			
+			/////////////////////////////////////////////////////////////////////////////////
+		
+			
+			System.out.println("[1.메뉴 추가 2.메뉴 수정 2.메뉴 삭제 3.메뉴 활성화 0.뒤로가기]");
 			int input =ScanUtil.nextInt2();
 			switch(input) {
-			case 1:
+			case 1: //1.메뉴 추가하기
 				
 				return View.MNG_PROD; //메뉴 관리
-			case 2:return View.MNG_ORDER; //예약주문 관리
-			case 3:return View.MNG_REVIEW; //한줄평 관리
-			case 4:return View.MNG_BAKING; //생산량 관리
-			case 5:return View.MNG_SALES; //매출 관리
-			case 9:return View.ADMIN_HOME;
+			case 2: //2.메뉴 수정하기
+				return View.MNG_ORDER; //예약주문 관리
+			case 3: //3.메뉴 삭제하기
+				return View.MNG_REVIEW; //한줄평 관리
+			case 4: //3.메뉴 활성화
+				return View.MNG_REVIEW; //한줄평 관리
 			case 0:
-				return View.LOGOUT;
+				return View.MANAGEMENT;
 			}
 			return 0;
+		}
+		
+		
+		private void insertProd() {
+			System.out.println("[추가할 메뉴의 종류를 선택해주세요.\n[1.빵 2.쿠키 3.케이크 4.음료]\n->");
+			int input = ScanUtil.nextInt2();
+			String type = "";
+			if(input == 1) {
+				type = "a";
+			}else if(input ==2) {
+				type = "b";
+			}else if(input == 3) {
+				type = "c";
+			}else if(input == 4) {
+				type = "d";
+			}else {
+				System.out.println("보기에 없는 선택입니다. 다시 선택해주세요.");
+				insertProd();
+			}
 		}
 
 
