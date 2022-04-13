@@ -38,7 +38,7 @@ public class BoardService {
 		List<Map<String, Object>> boardList = boardDao.allBoardList();
 		
 		System.out.println("┌─────────────────────┐");
-		System.out.println("번호\t제목\t작성자\t작성일");
+		System.out.println("\t번호\t제목\t작성자\t작성일");
 		System.out.println(" ──────────────────────");
 		for(Map<String, Object> board : boardList) {
 			System.out.print(board.get("BOARD_NO") + "\t");
@@ -48,7 +48,7 @@ public class BoardService {
 		}
 		System.out.println("└─────────────────────┘");
 		
-		System.out.println(" [1.글읽기 2.공지사항만 보기 3.이벤트만 보기 0.홈으로]");
+		System.out.println("\n\n\n[1.글읽기 2.공지사항만 보기 3.이벤트만 보기 0.홈으로]");
 		int input = ScanUtil.nextInt2();
 		switch(input) {
 		case 1:
@@ -162,7 +162,7 @@ public class BoardService {
 		
 		if (userService.LoginMember.get("MEM_ID").equals("admin")){
 			//관리자 로그인
-			System.out.println("\n\n\n[1.수정 2.삭제 9.뒤로가기 0.홈으로");
+			System.out.println("\n\n\n[1.수정 2.삭제 9.뒤로가기 0.홈으로]");
 			int input = ScanUtil.nextInt2();
 
 			switch(input) {
@@ -177,10 +177,10 @@ public class BoardService {
 				}
 			case 2: //2.삭제 선택 시
 				int delResult = deletePost(board);
-				if(delResult == 0) {
+				if(delResult == 1) {
 					System.out.println("삭제 완료!");
 					return View.BOARD_LIST;
-				}else if(delResult == 1) {
+				}else if(delResult == 0) {
 					System.out.println("삭제 실패!");
 					return View.BOARD_READ;
 				}else if(delResult == 2) {
