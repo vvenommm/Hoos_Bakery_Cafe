@@ -147,14 +147,22 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
+	//앞으로 찾아갈 승인된 예약 주문들
+	public List<Map<String, Object>> aprvedOrder(){
+		String sql = "SELECT RSV_OD, RSV_PIKCUP, RSV_ETC, MEM_ID FROM B_RSV WHERE RSV_APRV LIKE '승인' AND RSV_PICKUP > SYSDATE";
+		return JDBCUtil.selectList(sql);
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
 	//새로 예약해서 승인을 기다리는 주문 들
 	public List<Map<String, Object>> newOrder(){
 		String sql = "SELECT R.RSV_OD, M.MENU_NAME, (R.RSV_QTY || '개'), R.RSV_DATE, R.RSV_ETC, R.MEM_ID, R.RSV_APRV FROM B_RSV R, B_MENU M WHERE M.MENU_ID = r.RSV_CODE AND RSV_APRV LIKE '신청'";
 		return JDBCUtil.selectList(sql);
 	}
 	
-	
-
 	
 
 
