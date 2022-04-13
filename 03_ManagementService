@@ -1,6 +1,8 @@
 package service;
 
 import dao.ManagementDao;
+import util.ScanUtil;
+import util.View;
 
 public class ManagementService {
 	
@@ -19,8 +21,91 @@ public class ManagementService {
 		
 		/////////////////////////////////////////////////////////////////////////////////
 		
+
 		private static ManagementDao mngDao = ManagementDao.getInstance();
+		
+		
+		/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		public int mngList() {
+			System.out.println("[1.상품 관리 2.예약 관리 3.한줄평 관리 4.생산량 관리 5.매출 관리 9.뒤로가기 0.로그아웃]");
+			int input =ScanUtil.nextInt2();
+			switch(input) {
+			case 1:return View.MNG_PROD; //메뉴 관리
+			case 2:return View.MNG_ORDER; //예약주문 관리
+			case 3:return View.MNG_REVIEW; //한줄평 관리
+			case 4:return View.MNG_BAKING; //생산량 관리
+			case 5:return View.MNG_SALES; //매출 관리
+			case 9:return View.ADMIN_HOME;
+			case 0:
+				return View.LOGOUT;
+			}
+			return View.HOME;
+		}
+
 
 		/////////////////////////////////////////////////////////////////////////////////
+
+		
+		//MNG_PROD 메뉴 관리
+		public int mngProd() {
+			System.out.println("[1.메뉴 추가하기 2.메뉴 수정하기 3.메뉴 삭제하기 0.뒤로가기]");
+			int input =ScanUtil.nextInt2();
+			switch(input) {
+			case 1:
+				
+				return View.MNG_PROD; //메뉴 관리
+			case 2:return View.MNG_ORDER; //예약주문 관리
+			case 3:return View.MNG_REVIEW; //한줄평 관리
+			case 4:return View.MNG_BAKING; //생산량 관리
+			case 5:return View.MNG_SALES; //매출 관리
+			case 9:return View.ADMIN_HOME;
+			case 0:
+				return View.LOGOUT;
+			}
+			return 0;
+		}
+
+
+		/////////////////////////////////////////////////////////////////////////////////
+
+		
+		//MNG_ORDER 예약주문 관리
+		public int mngOrder() {
+			return 0;
+		}
+
+
+		/////////////////////////////////////////////////////////////////////////////////
+
+		
+		//MNG_REVIEW 한줄평 관리
+		public int mngReview() {
+			return 0;
+		}
+
+
+		/////////////////////////////////////////////////////////////////////////////////
+
+		
+		//MNG_BAKING 생산량 관리
+		public int mngBaking() {
+			return 0;
+		}
+
+
+		/////////////////////////////////////////////////////////////////////////////////
+
+		
+		//MNG_SALES 매출 관리
+		public int mngSales() {
+			return 0;
+		}
+
+		
+		/////////////////////////////////////////////////////////////////////////////////
+
+		
 
 }
