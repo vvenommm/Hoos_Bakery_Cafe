@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +24,105 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
-	public List<Map<String, Object>> mngProd(){
+	//모든 메뉴 5개씩 출력
+	
+	public List<Map<String, Object>> allProdList(){
+		String sql = "SELECT U.* " + 
+				" FROM " + 
+				" ( " + 
+				"    SELECT ROWNUM RNUM, T.* " + 
+				"    FROM " + 
+				"    ( " + 
+				"        SELECT MENU_ID FROM B_MENU " + 
+				"        WHERE  MENU_ID LIKE '?%' " + 
+				"        ORDER BY MENU_ID DESC " + 
+				"    ) T " + 
+				" ) U " + 
+				" WHERE U.RNUM <= 5";
 		
-		return JDBCUtil.selectOne(null);
+		return JDBCUtil.selectList(sql);
 	}
 
+	
+/////////////////////////////////////////////////////////////////////////////////
 
-}
+	
+	//각 제품 출력
+	public List<Map<String, Object>> breadList(){
+		String sql = "SELECT U.* " + 
+				" FROM " + 
+				" ( " + 
+				"    SELECT ROWNUM RNUM, T.* " + 
+				"    FROM " + 
+				"    ( " + 
+				"        SELECT MENU_ID FROM B_MENU " + 
+				"        WHERE  MENU_ID LIKE 'a%' " + 
+				"        ORDER BY MENU_ID DESC " + 
+				"    ) T " + 
+				" ) U " + 
+				" WHERE U.RNUM <= 3";
+		
+		return JDBCUtil.selectList(sql);
+	}
+	
+	public List<Map<String, Object>> cookieList(){
+		String sql = "SELECT U.* " + 
+				" FROM " + 
+				" ( " + 
+				"    SELECT ROWNUM RNUM, T.* " + 
+				"    FROM " + 
+				"    ( " + 
+				"        SELECT MENU_ID FROM B_MENU " + 
+				"        WHERE  MENU_ID LIKE 'b%' " + 
+				"        ORDER BY MENU_ID DESC " + 
+				"    ) T " + 
+				" ) U " + 
+				" WHERE U.RNUM <= 3";
+		
+		return JDBCUtil.selectList(sql);
+	}
+	
+	public List<Map<String, Object>> cakeList(){
+		String sql = "SELECT U.* " + 
+				" FROM " + 
+				" ( " + 
+				"    SELECT ROWNUM RNUM, T.* " + 
+				"    FROM " + 
+				"    ( " + 
+				"        SELECT MENU_ID FROM B_MENU " + 
+				"        WHERE  MENU_ID LIKE 'c%' " + 
+				"        ORDER BY MENU_ID DESC " + 
+				"    ) T " + 
+				" ) U " + 
+				" WHERE U.RNUM <= 3";
+		
+		return JDBCUtil.selectList(sql);
+	}
+	
+	public List<Map<String, Object>> drinkList(){
+		String sql = "SELECT U.* " + 
+				" FROM " + 
+				" ( " + 
+				"    SELECT ROWNUM RNUM, T.* " + 
+				"    FROM " + 
+				"    ( " + 
+				"        SELECT MENU_ID FROM B_MENU " + 
+				"        WHERE  MENU_ID LIKE 'd%' " + 
+				"        ORDER BY MENU_ID DESC " + 
+				"    ) T " + 
+				" ) U " + 
+				" WHERE U.RNUM <= 3";
+		
+		return JDBCUtil.selectList(sql);
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+
+
+} 
