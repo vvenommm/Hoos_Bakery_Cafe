@@ -37,7 +37,7 @@ public class ManagementService {
 			System.out.println("[1.메뉴 관리 2.예약 관리 3.한줄평 관리 4.생산량 관리 5.매출 관리 9.뒤로가기 0.로그아웃]");
 			int input =ScanUtil.nextInt2();
 			switch(input) {
-			case 1:return View.MNG_PROD; //메뉴 관리
+			case 1:return View.MNG_MENU; //메뉴 관리
 			case 2:return View.MNG_ORDER; //예약주문 관리
 			case 3:return View.MNG_REVIEW; //한줄평 관리
 			case 4:return View.MNG_BAKING; //생산량 관리
@@ -64,6 +64,7 @@ public class ManagementService {
 				for(Map<String, Object> menu : list) {
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
+					System.out.print("\n");
 //					System.out.println(menu.get("MENU_ACTIVE"));
 				}
 			}
@@ -73,6 +74,7 @@ public class ManagementService {
 				for(Map<String, Object> menu : list) {
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
+					System.out.print("\n");
 //					System.out.println(menu.get("MENU_ACTIVE"));
 				}
 			}
@@ -82,6 +84,7 @@ public class ManagementService {
 				for(Map<String, Object> menu : list) {
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
+					System.out.print("\n");
 //					System.out.println(menu.get("MENU_ACTIVE"));
 				}
 			}
@@ -91,6 +94,7 @@ public class ManagementService {
 				for(Map<String, Object> menu : list) {
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
+					System.out.print("\n");
 //					System.out.println(menu.get("MENU_ACTIVE"));
 				}
 			}
@@ -103,8 +107,7 @@ public class ManagementService {
 			int input =ScanUtil.nextInt2();
 			switch(input) {
 			case 1: //1.메뉴 추가하기
-				
-				return View.MNG_PROD; //메뉴 관리
+				return View.MNG_INSERT_MENU; //메뉴 관리
 			case 2: //2.메뉴 수정하기
 				return View.MNG_ORDER; //예약주문 관리
 			case 3: //3.메뉴 삭제하기
@@ -118,7 +121,7 @@ public class ManagementService {
 		}
 		
 		
-		private void insertProd() {
+		public int insertMenu() {
 			System.out.println("[추가할 메뉴의 종류를 선택해주세요.\n[1.빵 2.쿠키 3.케이크 4.음료]\n->");
 			int input = ScanUtil.nextInt2();
 			String type = "";
@@ -132,7 +135,26 @@ public class ManagementService {
 				type = "d";
 			}else {
 				System.out.println("보기에 없는 선택입니다. 다시 선택해주세요.");
-				insertProd();
+				return View.MNG_INSERT_MENU;
+			}
+			
+			System.out.println("추가할 메뉴의 이름을 입력해주세요.\n->");
+			String name = ScanUtil.nextLine();
+			
+			System.out.println("추가할 메뉴의 가격을 입력해주세요.\n->");
+			int price = ScanUtil.nextInt();
+			
+			System.out.println("추가할 메뉴에 대한 설명을 입력해주세요.\n->");
+			String detail = ScanUtil.nextLine();
+			
+			int result = mngDao.insertMenu(type, name, price, detail);
+			
+			if(result == 1) {
+				System.out.println("추가 성공!");
+				return View.MNG_MENU; //성공하면 [1.메뉴 관리]로 이동
+			}else {
+				System.out.println("메뉴 추가 실패하였습니다.");
+				return View.MNG_INSERT_MENU; //실패하면 [1.메뉴 추가하기]로 이동
 			}
 		}
 
@@ -142,6 +164,23 @@ public class ManagementService {
 		
 		//MNG_ORDER 예약주문 관리
 		public int mngOrder() {
+			System.out.println("<승인을 기다리는 예약 목록>");
+			System.out.println("예약 번호\t예약한 메뉴\t수량\t수령일\t예약자\t승인");
+			System.out.println("--------------------------------");
+			List<Map<String, Object>> list = mngDao.newOrder();
+			for(int i = 0; i < list.size(); i++) {//새 예약 주문 출력
+				for(Map<String, Object> order : list) {
+					System.out.print(order.get("RSV_OD") + "\t");
+					System.out.print(order.get("RSV_CODE") + "\t");
+					System.out.print(order.get("RSV_QTY") + "\t");
+					System.out.print(order.get("RSV_DATE") + "\t");
+					System.out.print(order.get("MEM_ID") + "\t");
+					System.out.println(order.get("RSV_APRV") + "\t");
+				}
+			}
+			System.out.println("--------------------------------");
+			System.out.println("[1.예약 승인 2.");
+			
 			return 0;
 		}
 
