@@ -48,7 +48,7 @@ public class BoardService {
 		}
 		System.out.println("└─────────────────────┘");
 		
-		System.out.println("\n\n\n[1.글읽기 2.공지사항만 보기 3.이벤트만 보기 0.홈으로]");
+		System.out.println("\n\n\n[1.조회 2.공지사항만 보기 3.이벤트만 보기 0.홈으로]");
 		int input = ScanUtil.nextInt2();
 		switch(input) {
 		case 1:
