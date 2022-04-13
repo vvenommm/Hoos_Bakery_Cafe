@@ -1,0 +1,26 @@
+package service;
+
+import dao.ManagementDao;
+
+public class ManagementService {
+	
+	//싱글톤 패턴
+		private ManagementService() {
+				
+		}
+		private static ManagementService instance; 
+		public static ManagementService getInstance() { 
+			if(instance == null) {
+				instance = new ManagementService();
+			}
+			return instance;
+		}
+		
+		
+		/////////////////////////////////////////////////////////////////////////////////
+		
+		private static ManagementDao mngDao = ManagementDao.getInstance();
+
+		/////////////////////////////////////////////////////////////////////////////////
+
+}
