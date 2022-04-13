@@ -1,10 +1,10 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import dao.BoardDao;
-import util.JDBCUtil;
 import util.ScanUtil;
 import util.View;
 
@@ -43,7 +43,7 @@ public class BoardService {
 		for(Map<String, Object> board : boardList) {
 			System.out.print(board.get("BOARD_NO") + "\t");
 			System.out.print(board.get("BOARD_TITLE") + "\t");
-			System.out.print(board.get("ADMIN_NN") + "\t");
+			System.out.print(board.get("MEM_NNAME") + "\t");
 			System.out.println(board.get("BOARD_DATE"));
 		}
 		System.out.println("└─────────────────────┘");
@@ -52,16 +52,20 @@ public class BoardService {
 		int input = ScanUtil.nextInt2();
 		switch(input) {
 		case 1:
-			return View.BOARD_READ;
+			return View.BOARD_READ; //글 읽기
 		case 2:
-			return View.BOARD_NOTICE;
+			return View.BOARD_NOTICE; //공지사항만 보기
 		case 3:
-			return View.BOARD_EVENT;
+			return View.BOARD_EVENT; //이벤트만 보기
 		case 0:
-			//로그인 했을 때, 로그인 안 했을 때 갈 홈 구분해주기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			return View.HOME;
+			if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+				return View.ADMIN_HOME;
+			}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+				return View.MEM_HOME;
+			}else { //비회원 홈
+				return View.HOME;
+			}
 		}
-		
 		return View.HOME;
 		}
 	
@@ -78,12 +82,27 @@ public class BoardService {
 		for(Map<String, Object> board : noticeList) {
 			System.out.print(board.get("BOARD_NO") + "\t");
 			System.out.print(board.get("BOARD_TITLE") + "\t");
-			System.out.print(board.get("ADMIN_NN") + "\t");
+			System.out.print(board.get("MEM_NNAME") + "\t");
 			System.out.println(board.get("BOARD_DATE"));
 		}
 		System.out.println("└─────────────────────┘");
 		
-		System.out.println("\n\n[1. ");
+		System.out.println("\n\n[1.조회 9.뒤로가기 0.홈으로]");
+		int input = ScanUtil.nextInt2();
+		switch(input) {
+		case 1:
+			return View.BOARD_READ; //글 읽기
+		case 9:
+			return View.BOARD_LIST; //전체 게시글 보기
+		case 0:
+			if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+				return View.ADMIN_HOME;
+			}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+				return View.MEM_HOME;
+			}else { //비회원 홈
+				return View.HOME;
+			}
+		}
 		return View.BOARD_LIST;
 	}
 	
@@ -100,12 +119,27 @@ public class BoardService {
 		for(Map<String, Object> board : eventList) {
 			System.out.print(board.get("BOARD_NO") + "\t");
 			System.out.print(board.get("BOARD_TITLE") + "\t");
-			System.out.print(board.get("ADMIN_NN") + "\t");
+			System.out.print(board.get("MEM_NNAME") + "\t");
 			System.out.println(board.get("BOARD_DATE"));
 		}
 		System.out.println("└─────────────────────┘");
 		
-		System.out.println("\n\n[1. ");
+		System.out.println("\n\n[1.조회 9.뒤로가기 0.홈으로]");
+		int input = ScanUtil.nextInt2();
+		switch(input) {
+		case 1:
+			return View.BOARD_READ; //글 읽기
+		case 9:
+			return View.BOARD_LIST; //전체 게시글 보기
+		case 0:
+			if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+				return View.ADMIN_HOME;
+			}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+				return View.MEM_HOME;
+			}else { //비회원 홈
+				return View.HOME;
+			}
+		}
 		return View.BOARD_LIST;
 	}
 	
@@ -122,15 +156,15 @@ public class BoardService {
 		System.out.println("글번호 : " + board.get("BOARD_NO"));
 		System.out.println(board.get("BOARD_TITLE"));
 		System.out.println(" ──────────────────────");
-		System.out.print("작성자 : " + board.get("ADMIN_NN") + "\t작성일 : " + board.get("BOARD_DATE") + "\n\n");
+		System.out.print("작성자 : " + board.get("MEM_NNAME") + "\t작성일 : " + board.get("BOARD_DATE") + "\n\n");
 		System.out.println(board.get("BOARD_CONTENT"));
 		System.out.println("└─────────────────────┘");
 		
-		if (userService.LoginMember.get("MEM_ID").equals("ADMIN_ID")){
+		if (userService.LoginMember.get("MEM_ID").equals("admin")){
 			//관리자 로그인
 			System.out.println("\n\n\n[1.수정 2.삭제 9.뒤로가기 0.홈으로");
 			int input = ScanUtil.nextInt2();
-			
+
 			switch(input) {
 			case 1: //1.수정 선택 시
 				int editResult = editPost(board); //수정 완료면 1, 실패면 0
@@ -183,10 +217,10 @@ public class BoardService {
 	}
 	
 	
-/////////////////////////////////////////////////////////////////////////////////
-
-	//관리자의 글 수정, 삭제, 작성
+	/////////////////////////////////////////////////////////////////////////////////
 	
+	//게시판 관리 : 글 수정, 삭제, 작성
+
 
 	//관리자 글 수정
 	public int editPost(Map<String, Object> board) {
@@ -194,13 +228,13 @@ public class BoardService {
 		String title = ScanUtil.nextLine();
 		System.out.println("내용을 새로 입력해주세요. : ");
 		String content = ScanUtil.nextLine();
-		
+
 		int result = boardDao.editPost(title, content, board); //글 수정 메소드
 		return result;
 	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
+
+
+	/////////////////////////////////////////////////////////////////////////////////
 
 
 	//관리자 글 삭제
@@ -215,16 +249,32 @@ public class BoardService {
 		}
 		return result;
 	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
+
+
+	/////////////////////////////////////////////////////////////////////////////////
 
 
 	//관리자 글 작성
 	public int posting() {
-		return View.BOARD_LIST;
+		System.out.println("말머리를 선택해주세요.\n[1.공지사항 2.이벤트] : ");
+		int code = ScanUtil.nextInt2();
+		System.out.println("제목을 입력해주세요. : ");
+		String title = ScanUtil.nextLine();
+		System.out.println("내용을 입력해주세요. : ");
+		String content = ScanUtil.nextLine();
+
+		List<Object> input = new ArrayList<Object>();
+
+		input.add(code);
+		input.add(title);
+		input.add(content);
+
+		int result = boardDao.insertPost(input);
+
+		return result;
 	}
 
-}
 
+
+}
 
