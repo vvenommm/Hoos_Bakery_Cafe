@@ -40,6 +40,8 @@ public class ManagementDao {
 				" ) U " + 
 				" WHERE U.RNUM <= 5";
 		
+		
+		
 		return JDBCUtil.selectList(sql);
 	}
 
@@ -120,8 +122,39 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
+	public int insertMenu(String type, String name, int price, String detail){
+		String sql = "INSERT INTO B_MENU(MENU_ID, MEMU_NAME, MENU_PRICE, MENU_DETAIL, MEMU_ACTIVE) VALUES(? || MAX(TO_NUMBER(SUBSTR(NVL(MENU_ID,0), 2)))+1, ?, ?, ?, ?)";
+		List<Object> param = new ArrayList<Object>();
+		
+		param.add(type);
+		param.add(name);
+		param.add(price);
+		param.add(detail);
+		param.add("on");
+		return JDBCUtil.update(sql, param);
+	}
 	
 	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	public List<Map<String, Object>> mngOrder(){
+		String sql = "SELECT RSV_OD, RSV_DATE, RSV_ETC, MEM_ID, RSV_APRV FROM B_RSV WHERE RSV_DATE > SYSDATE";
+		return JDBCUtil.selectList(sql);
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//새로 예약해서 승인을 기다리는 주문 들
+	public List<Map<String, Object>> newOrder(){
+		String sql = "SELECT R.RSV_OD, M.MENU_NAME, (R.RSV_QTY || '개'), R.RSV_DATE, R.RSV_ETC, R.MEM_ID, R.RSV_APRV FROM B_RSV R, B_MENU M WHERE M.MENU_ID = r.RSV_CODE AND RSV_APRV LIKE '신청'";
+		return JDBCUtil.selectList(sql);
+	}
+	
+	
+
 	
 
 
