@@ -36,13 +36,18 @@ public class Controller {
 			case View.LOGIN : view = userService.login(); break;
 			case View.LOGOUT : view = userService.logout(); break;
 			case View.JOIN: view =userService. join(); break;
+			case View.JOIN_AGREE: view = userService.policy(); break;
 			case View.BOARD_LIST: view = boardService.boardList(); break; //게시판 홈
 			case View.BOARD_NOTICE: view = boardService.noticeList(); break; //공지 모음
 			case View.BOARD_EVENT: view = boardService.eventList(); break; //이벤트 모음
 			case View.BOARD_READ: view = boardService.readPost(); break; //글 읽기
 			case View.BOARD_POSTING: view = boardService.posting(); break; //글 등록
 			case View.MANAGEMENT: view = mngService.mngList(); break; //관리 페이지 홈
-			case View.MNG_PROD: view = mngService.mngProd(); break; //메뉴 관리
+			case View.MNG_MENU: view = mngService.mngProd(); break; //메뉴 관리
+			case View.MNG_INSERT_MENU: view = mngService.insertMenu(); break;
+			case View.MNG_EDIT_MENU: view = mngService.editMenu(); break;
+			case View.MNG_DEL_MENU: view = mngService.delMenu(); break;
+			case View.MNG_ACT_MENU: view = mngService.actMenu(); break;
 			case View.MNG_ORDER: view = mngService.mngOrder(); break; //예약주문 관리
 			case View.MNG_REVIEW: view = mngService.mngReview(); break; //한줄평 관리
 			case View.MNG_BAKING: view = mngService.mngBaking(); break; //당일 생산량 관리
@@ -101,7 +106,7 @@ public class Controller {
 		case 2:return View.MENU;
 		case 3:return View.BOARD_LIST;
 		case 4:return View.ORDER;
-		case 9:return View.JOIN;
+		case 9:return View.JOIN_AGREE;
 		case 0:
 			System.out.println("프로그램을 종료합니다.");
 			System.exit(0);
