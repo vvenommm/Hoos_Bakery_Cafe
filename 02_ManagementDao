@@ -220,6 +220,23 @@ public class ManagementDao {
 	}
 	
 	
+/////////////////////////////////////////////////////////////////////////////////
+
+	
+	//MNG_DEACTIVATED [2. 메뉴 죽이기]
+	public List<Map<String, Object>> actedList() {
+		String sql = "SELECT MENU_ID, MENU_NAME, MENU_PRICE, MENU_ACTIVE FROM B_MENU WHERE MENU_ACTIVE LIKE '활%'";
+		return JDBCUtil.selectList(sql);
+	}
+	
+	public int deactvating(int input){
+		String sql = "UPDATE B_MENU SET MENU_ACTIVE = '활성' WHERE MENU_ID = ?";
+		List<Object> param = new ArrayList<Object>();
+
+		param.add(input);
+		return JDBCUtil.update(sql, param);
+	}
+	
 	
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
@@ -275,9 +292,8 @@ public class ManagementDao {
 	//MNG_SALES [5.매출 관리]
 	
 	
-	
-	
 
+	
 	
 
 
