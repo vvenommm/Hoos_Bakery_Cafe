@@ -436,12 +436,12 @@ public class ManagementService {
 		//MNG_DEACTIVATED [2. 메뉴 죽이기]
 		public int deactvMenu() {
 			System.out.println("<활성 메뉴 목록");
-			List<Map<String, Object>> deactedList = mngDao.deactedList();
+			List<Map<String, Object>> actedList = mngDao.actedList();
 			
 			System.out.println("┌─────────────────────┐");
 			System.out.println("메뉴 고유 번호\t메뉴명\t가격\t상태");
 			System.out.println(" ──────────────────────");
-			for(Map<String, Object> menu : deactedList) {
+			for(Map<String, Object> menu : actedList) {
 				System.out.print(menu.get("MENU_ID") + "\t");
 				System.out.print(menu.get("MENU_NAME") + "\t");
 				System.out.print(menu.get("MENU_PRICE") + "\t");
@@ -449,27 +449,25 @@ public class ManagementService {
 			}
 			System.out.println("└─────────────────────┘");
 			
-			System.out.println("[1.활성화 하기 9.뒤로가기 0.홈으로]");
+			System.out.println("[1.비활성화 하기 9.뒤로가기 0.홈으로]");
 			int input = ScanUtil.nextInt();
 			switch(input) {
 				case 1: //[1활성화 하기]
-					System.out.println("활성화 하려는 메뉴의 고유번호를 입력해주세요.\n->");
+					System.out.println("비활성화 하려는 메뉴의 고유번호를 입력해주세요.\n->");
 					input = ScanUtil.nextInt();
 					
-					int result = mngDao.actvating(input);
+					int result = mngDao.deactvating(input);
 					
 					if(result == 1) {
-						System.out.println("활성화 성공!");
+						System.out.println("비활성화 성공!");
 					}else {
-						System.out.println("활성화에 실패했습니다.");
+						System.out.println("비활성화에 실패했습니다.");
 					}
 				case 9: //[9.뒤로가기] -> [4.메뉴 항목 활성화]
 					return View.MNG_ACT_MENU;
 				case 0: //[0.홈으로]
 					return View.ADMIN_HOME;
 			}
-			
-			
 			return View.ADMIN_HOME;
 		}
 
