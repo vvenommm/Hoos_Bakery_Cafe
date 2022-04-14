@@ -33,6 +33,7 @@ public class ManagementService {
 		/////////////////////////////////////////////////////////////////////////////////
 		
 		
+		//MANAGEMENT 관리자 홈
 		public int mngList() {
 			System.out.println("[1.메뉴 관리 2.예약 관리 3.한줄평 관리 4.생산량 관리 5.매출 관리 9.뒤로가기 0.로그아웃]");
 			int input =ScanUtil.nextInt2();
@@ -53,7 +54,7 @@ public class ManagementService {
 		/////////////////////////////////////////////////////////////////////////////////
 
 		
-		//MNG_PROD 메뉴 관리 - 활성 상태도 넣기
+		//MNG_MENU 메뉴 관리 - 활성 상태도 넣기
 		public int mngProd() {
 			List<Map<String, Object>> list = mngDao.breadList();
 			
@@ -100,30 +101,33 @@ public class ManagementService {
 			}
 			
 			
-			/////////////////////////////////////////////////////////////////////////////////
-		
-			
-			System.out.println("[1.메뉴 추가 2.메뉴 수정 2.메뉴 삭제 3.메뉴 활성화 0.뒤로가기]");
+			System.out.println("[1.메뉴 추가 2.메뉴 수정 2.메뉴 삭제 3.메뉴 활성화 9.뒤로가기 0.홈으로]");
 			int input =ScanUtil.nextInt2();
 			switch(input) {
 			case 1: //1.메뉴 추가하기
-				return View.MNG_INSERT_MENU; //메뉴 관리
+				return View.MNG_INSERT_MENU; //메뉴 항목 관리
 			case 2: //2.메뉴 수정하기
-				return View.MNG_ORDER; //예약주문 관리
+				return View.MNG_EDIT_MENU; //메뉴 항목 수정
 			case 3: //3.메뉴 삭제하기
-				return View.MNG_REVIEW; //한줄평 관리
+				return View.MNG_REVIEW; //메뉴 항목 삭제
 			case 4: //3.메뉴 활성화
-				return View.MNG_REVIEW; //한줄평 관리
-			case 0:
+				return View.MNG_REVIEW; //메뉴 항목 활성화
+			case 9: //9. 관리 홈
 				return View.MANAGEMENT;
+			case 0: //0. 관리자 로그인 홈
+				return View.ADMIN_HOME;
 			}
-			return 0;
+			return View.ADMIN_HOME;
 		}
 		
 		
+		/////////////////////////////////////////////////////////////////////////////////
+
+		
+		//MNG_INSERT_MENU [1.메뉴 추가]
 		public int insertMenu() {
 			System.out.println("[추가할 메뉴의 종류를 선택해주세요.\n[1.빵 2.쿠키 3.케이크 4.음료]\n->");
-			int input = ScanUtil.nextInt2();
+			int input = ScanUtil.nextInt();
 			String type = "";
 			if(input == 1) {
 				type = "a";
@@ -159,6 +163,51 @@ public class ManagementService {
 		}
 
 
+		/////////////////////////////////////////////////////////////////////////////////
+
+		
+		//MNG_EDIT_MENU [2.메뉴 수정]
+		public int editMenu() {
+			System.out.println("[수정할 메뉴의 종류를 선택해주세요.\n[1.빵 2.쿠키 3.케이크 4.음료]\n->");
+			int input = ScanUtil.nextInt();
+			String type = "";
+			if(input == 1) {
+				type = "a";
+			}else if(input ==2) {
+				type = "b";
+			}else if(input == 3) {
+				type = "c";
+			}else if(input == 4) {
+				type = "d";
+			}else {
+				System.out.println("보기에 없는 선택입니다. 다시 선택해주세요.");
+				return View.MNG_EDIT_MENU;
+			}
+			
+			System.out.println("새로운 이름을 입력해주세요.\n->");
+			String name = ScanUtil.nextLine();
+			System.out.println("새로운 가격을 입력해주세요.\n->");
+			String price = ScanUtil.nextLine();
+			System.out.println("새로운 설명을 입력해주세요.\n->");
+			String detail = ScanUtil.nextLine();
+			
+			List<Object> newInput = new ArrayList<Object>();
+			newInput.add(name);
+			newInput.add(price);
+			newInput.add(detail);
+			
+			int result = mngDao.editMenu(name, price, detail);
+			
+			if(result == 1) {
+				System.out.println("수정 성공!");
+				return View.MNG_MENU; //성공하면 [1.메뉴 관리]로 이동
+			}else {
+				System.out.println("메뉴 수정 실패하였습니다.");
+				return View.MNG_EDIT_MENU; //실패하면 [1.메뉴 추가하기]로 이동
+			}
+		}
+		
+		
 		/////////////////////////////////////////////////////////////////////////////////
 		
 		
