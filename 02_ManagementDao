@@ -138,6 +138,22 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
+	//기존 메뉴 수정하기
+	public int editMenu(String name, String price, String detail){
+		String sql = "INSERT B_MENU(MENU_NAME, MENU_PRICE, MENU_DETAIL) VALUES(?, ?, ?) WHERE ";
+		List<Object> param = new ArrayList<Object>();
+		
+		param.add(name);
+		param.add(price);
+		param.add(detail);
+		
+		return JDBCUtil.update(sql, param);
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
 	public List<Map<String, Object>> mngOrder(){
 		String sql = "SELECT RSV_OD, RSV_DATE, RSV_ETC, MEM_ID, RSV_APRV FROM B_RSV WHERE RSV_DATE > SYSDATE";
 		return JDBCUtil.selectList(sql);
@@ -164,6 +180,8 @@ public class ManagementDao {
 	}
 	
 	
+	
+
 
 
 } 
