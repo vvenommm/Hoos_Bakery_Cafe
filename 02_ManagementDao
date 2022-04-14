@@ -60,7 +60,7 @@ public class ManagementDao {
 				"    SELECT ROWNUM RNUM, T.* " + 
 				"    FROM " + 
 				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
+				"        SELECT MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 10) || '...' MENU_DETAIL FROM B_MENU " + 
 				"        WHERE  MENU_ID LIKE 'a%' " + 
 				"        ORDER BY MENU_ID DESC " + 
 				"    ) T " + 
@@ -77,7 +77,7 @@ public class ManagementDao {
 				"    SELECT ROWNUM RNUM, T.* " + 
 				"    FROM " + 
 				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
+				"        SELECT MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 10) || '...' MENU_DETAIL FROM B_MENU " + 
 				"        WHERE  MENU_ID LIKE 'b%' " + 
 				"        ORDER BY MENU_ID DESC " + 
 				"    ) T " + 
@@ -94,7 +94,7 @@ public class ManagementDao {
 				"    SELECT ROWNUM RNUM, T.* " + 
 				"    FROM " + 
 				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
+				"        SELECT MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 10) || '...' MENU_DETAIL FROM B_MENU " + 
 				"        WHERE  MENU_ID LIKE 'c%' " + 
 				"        ORDER BY MENU_ID DESC " + 
 				"    ) T " + 
@@ -111,7 +111,7 @@ public class ManagementDao {
 				"    SELECT ROWNUM RNUM, T.* " + 
 				"    FROM " + 
 				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
+				"        SELECT MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 10) || '...' MENU_DETAIL FROM B_MENU " + 
 				"        WHERE  MENU_ID LIKE 'd%' " + 
 				"        ORDER BY MENU_ID DESC " + 
 				"    ) T " + 
@@ -129,13 +129,13 @@ public class ManagementDao {
 	public List<Map<String, Object>> listMenu(String type){
 		String sql = "";
 		if(type.equals("a")) {
-			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)), MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' FROM B_MENU WHERE MENU_ID LIKE 'a%'";
+			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)) MENU_ID, MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' MENU_DETAIL FROM B_MENU WHERE MENU_ID LIKE 'a%'";
 		}else if(type.equals("b")) {
-			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)), MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' FROM B_MENU WHERE MENU_ID LIKE 'b%'";
+			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)) MENU_ID, MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' MENU_DETAIL FROM B_MENU WHERE MENU_ID LIKE 'b%'";
 		}else if(type.equals("c")) {
-			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)), MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' FROM B_MENU WHERE MENU_ID LIKE 'c%'";
+			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)) MENU_ID, MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' MENU_DETAIL FROM B_MENU WHERE MENU_ID LIKE 'c%'";
 		}else{
-			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)), MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' FROM B_MENU WHERE MENU_ID LIKE 'd%'";
+			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)) MENU_ID, MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' MENU_DETAIL FROM B_MENU WHERE MENU_ID LIKE 'd%'";
 		}
 		return JDBCUtil.selectList(sql);
 	}
@@ -190,14 +190,14 @@ public class ManagementDao {
 			
 	//MNG_INSERT_MENU [2.메뉴 추가]
 	public int insertMenu(String type, String name, int price, String detail){
-		String sql = "INSERT INTO B_MENU(MENU_ID, MEMU_NAME, MENU_PRICE, MENU_DETAIL, MEMU_ACTIVE) VALUES(? || MAX(TO_NUMBER(SUBSTR(NVL(MENU_ID,0), 2)))+1, ?, ?, ?, ?)";
+		String sql = "INSERT INTO B_MENU(MENU_ID, MENU_NAME, MENU_PRICE, MENU_DETAIL, MENU_ACTIVE) VALUES((SELECT ? || TRIM(SUBSTR(NVL(MAX(MENU_ID), 0), 2) + 1) FROM B_MENU), ?, ?, ?, ?)";
 		List<Object> param = new ArrayList<Object>();
 
 		param.add(type);
 		param.add(name);
 		param.add(price);
 		param.add(detail);
-		param.add("활성");
+		param.add("'활성'");
 		return JDBCUtil.update(sql, param);
 	}
 
@@ -211,11 +211,12 @@ public class ManagementDao {
 		return JDBCUtil.selectList(sql);
 	}
 	
-	public int actvating(int input){
-		String sql = "UPDATE B_MENU SET MENU_ACTIVE = '활성' WHERE MENU_ID = ?";
+	public int actvating(String code){
+		System.out.println("code : " + code);
+		String sql = "UPDATE B_MENU SET MENU_ACTIVE = '활성' WHERE TRIM(MENU_ID) = ?";
 		List<Object> param = new ArrayList<Object>();
 
-		param.add(input);
+		param.add(code);
 		return JDBCUtil.update(sql, param);
 	}
 	
@@ -229,11 +230,11 @@ public class ManagementDao {
 		return JDBCUtil.selectList(sql);
 	}
 	
-	public int deactvating(int input){
+	public int deactvating(String code){
 		String sql = "UPDATE B_MENU SET MENU_ACTIVE = '활성' WHERE MENU_ID = ?";
 		List<Object> param = new ArrayList<Object>();
 
-		param.add(input);
+		param.add(code);
 		return JDBCUtil.update(sql, param);
 	}
 	
@@ -244,9 +245,9 @@ public class ManagementDao {
 	//MNG_ORDER [2.예약 관리]
 	
 	
-	//예약 관리?
-	public List<Map<String, Object>> mngOrder(){
-		String sql = "SELECT RSV_OD, RSV_DATE, RSV_ETC, MEM_ID, RSV_APRV FROM B_RSV WHERE RSV_DATE > SYSDATE";
+	//MNG_ORDER [2.예약 관리] 홈. 앞으로 찾아갈 승인된 예약 주문들
+	public List<Map<String, Object>> aprvedOrder(){
+		String sql = "SELECT SUBSTR(RSV_OD, 3, 2) || '월 ' || SUBSTR(RSV_OD, 5, 2) || '일' RSV_PO, RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID FROM B_RSV WHERE RSV_APRV LIKE '승인' AND RSV_PICKUP > SYSDATE";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -254,11 +255,42 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
-	//앞으로 찾아갈 승인된 예약 주문들
-	public List<Map<String, Object>> aprvedOrder(){
-		String sql = "SELECT RSV_OD, RSV_PIKCUP, RSV_ETC, MEM_ID FROM B_RSV WHERE RSV_APRV LIKE '승인' AND RSV_PICKUP > SYSDATE";
-		return JDBCUtil.selectList(sql);
+	//MNG_ORDER [2.예약 관리] - [1.조회]
+	public Map<String, Object> readOrder(int rsvNum) {
+		String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_BOARD WHERE BOARD_NO = ?";
+		List<Object> param = new ArrayList<Object>();
+
+		param.add(rsvNum);
+		return JDBCUtil.selectOne(sql, param);
 	}
+	
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+	
+	//MNG_ORDER [2.예약 관리] - [2.예약 승인하기]
+	public Map<String, Object> orderAprv(int rsvNum) {
+		String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_BOARD WHERE BOARD_NO = ?";
+		List<Object> param = new ArrayList<Object>();
+
+		param.add(rsvNum);
+		return JDBCUtil.selectOne(sql, param);
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+	
+	//MNG_ORDER [2.예약 관리] - [3.거절한 예약 목록 보기]
+	public Map<String, Object> orderDenied(int rsvNum) {
+		String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_BOARD WHERE BOARD_NO = ?";
+		List<Object> param = new ArrayList<Object>();
+
+		param.add(rsvNum);
+		return JDBCUtil.selectOne(sql, param);
+	}
+	
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
@@ -266,9 +298,31 @@ public class ManagementDao {
 	
 	//새로 예약해서 승인을 기다리는 주문 들
 	public List<Map<String, Object>> newOrder(){
-		String sql = "SELECT R.RSV_OD, M.MENU_NAME, (R.RSV_QTY || '개'), R.RSV_DATE, R.RSV_ETC, R.MEM_ID, R.RSV_APRV FROM B_RSV R, B_MENU M WHERE M.MENU_ID = r.RSV_CODE AND RSV_APRV LIKE '신청'";
+		String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_RSV WHERE RSV_APRV LIKE '신청'";
 		return JDBCUtil.selectList(sql);
 	}
+	
+	
+	
+	//예약 주문 선택
+	   public Map<String, Object> selectOrder(int input2){
+	      String sql = "SELECT * FROM B_RSV WHERE TRIM(RSV_OD) = ?";
+	      List<Object>param = new ArrayList<Object>();
+	      param.add(input2);
+	      return JDBCUtil.selectOne(sql, param);
+	   }
+	   
+	   //RSV_APRV 변경
+	   public int changeAprv(String orderNum) {
+	      String sql = "UPDATE B_RSV SET RSV_APRV = ? WHERE RSV_OD = ?";
+	      List<Object>param = new ArrayList<Object>();
+	      param.add(orderNum);
+	      param.add("'승인'");
+	      return JDBCUtil.update(sql, param);
+	            
+	   }
+
+
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
@@ -293,8 +347,6 @@ public class ManagementDao {
 	
 	
 
-	
-	
 
 
 } 
