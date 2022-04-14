@@ -1,123 +1,54 @@
 package dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import util.JDBCUtil;
+import util.View;
 
-public class ManagementDao {
+public class BoardDao {
 	
 	//싱글톤 패턴
-	public ManagementDao() {
-			
+	public BoardDao() {
+					
 	}
-	public static ManagementDao instance; 
-	public static ManagementDao getInstance() { 
+	public static BoardDao instance;
+	public static BoardDao getInstance() { 
 		if(instance == null) {
-			instance = new ManagementDao();
+			instance = new BoardDao();
 		}
 		return instance;
 	}
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-	//MNG_MENU [1.메뉴관리]
 	
 	
-	//모든 메뉴 5개씩 출력
-	
-	public List<Map<String, Object>> allProdList(){
-		String sql = "SELECT U.* " + 
-				" FROM " + 
-				" ( " + 
-				"    SELECT ROWNUM RNUM, T.* " + 
-				"    FROM " + 
-				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
-				"        WHERE  MENU_ID LIKE '?%' " + 
-				"        ORDER BY MENU_ID DESC " + 
-				"    ) T " + 
-				" ) U " + 
-				" WHERE U.RNUM <= 5";
-		
-		
-		
+	//모든 글 출력
+	public List<Map<String, Object>> allBoardList(){
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD";
 		return JDBCUtil.selectList(sql);
 	}
-
+	
 	
 /////////////////////////////////////////////////////////////////////////////////
-
 	
-	//각 제품 3개씩 출력
-	public List<Map<String, Object>> breadList(){
-		String sql = "SELECT U.* " + 
-				" FROM " + 
-				" ( " + 
-				"    SELECT ROWNUM RNUM, T.* " + 
-				"    FROM " + 
-				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
-				"        WHERE  MENU_ID LIKE 'a%' " + 
-				"        ORDER BY MENU_ID DESC " + 
-				"    ) T " + 
-				" ) U " + 
-				" WHERE U.RNUM <= 3";
-		
+	
+	//공지사항 출력
+	public List<Map<String, Object>> noticeList(){
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 1";
 		return JDBCUtil.selectList(sql);
 	}
 	
-	public List<Map<String, Object>> cookieList(){
-		String sql = "SELECT U.* " + 
-				" FROM " + 
-				" ( " + 
-				"    SELECT ROWNUM RNUM, T.* " + 
-				"    FROM " + 
-				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
-				"        WHERE  MENU_ID LIKE 'b%' " + 
-				"        ORDER BY MENU_ID DESC " + 
-				"    ) T " + 
-				" ) U " + 
-				" WHERE U.RNUM <= 3";
-		
-		return JDBCUtil.selectList(sql);
-	}
 	
-	public List<Map<String, Object>> cakeList(){
-		String sql = "SELECT U.* " + 
-				" FROM " + 
-				" ( " + 
-				"    SELECT ROWNUM RNUM, T.* " + 
-				"    FROM " + 
-				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
-				"        WHERE  MENU_ID LIKE 'c%' " + 
-				"        ORDER BY MENU_ID DESC " + 
-				"    ) T " + 
-				" ) U " + 
-				" WHERE U.RNUM <= 3";
-		
-		return JDBCUtil.selectList(sql);
-	}
+/////////////////////////////////////////////////////////////////////////////////
 	
-	public List<Map<String, Object>> drinkList(){
-		String sql = "SELECT U.* " + 
-				" FROM " + 
-				" ( " + 
-				"    SELECT ROWNUM RNUM, T.* " + 
-				"    FROM " + 
-				"    ( " + 
-				"        SELECT MENU_ID FROM B_MENU " + 
-				"        WHERE  MENU_ID LIKE 'd%' " + 
-				"        ORDER BY MENU_ID DESC " + 
-				"    ) T " + 
-				" ) U " + 
-				" WHERE U.RNUM <= 3";
-		
+	
+	//이벤트 출력
+	public List<Map<String, Object>> eventList(){
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 2";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -125,131 +56,57 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 
 	
-	//
-	public List<Map<String, Object>> listMenu(String type){
-		String sql = "";
-		if(type.equals("a")) {
-			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)), MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' FROM B_MENU WHERE MENU_ID LIKE 'a%'";
-		}else if(type.equals("b")) {
-			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)), MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' FROM B_MENU WHERE MENU_ID LIKE 'b%'";
-		}else if(type.equals("c")) {
-			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)), MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' FROM B_MENU WHERE MENU_ID LIKE 'c%'";
-		}else{
-			sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID, 2)), MENU_NAME, MENU_PRICE, SUBSTR(MENU_DETAIL, 1, 8) || '...' FROM B_MENU WHERE MENU_ID LIKE 'd%'";
-		}
-		return JDBCUtil.selectList(sql);
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-	
-	
-	//MNG_EDIT_MENU [1-1.메뉴 수정]
-	public int editMenu(String name, String price, String detail){
-		String sql = "INSERT B_MENU(MENU_NAME, MENU_PRICE, MENU_DETAIL) VALUES(?, ?, ?) WHERE ";
+	//글읽기
+	public Map<String, Object> readPost(int boardNo){
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_NO = ?";
 		List<Object> param = new ArrayList<Object>();
-		
-		param.add(name);
-		param.add(price);
-		param.add(detail);
-		
-		return JDBCUtil.update(sql, param);
+
+		param.add(boardNo);
+		return JDBCUtil.selectOne(sql, param);
 	}
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
-	
-	
-	//MNG_DEL_MENU [1-2.메뉴 항목 삭제]
-	//글 삭제
-			public int delMenu(Map<String, Object> board) {
-				String sql = "DELETE FROM B_BOARD WHERE BOARD_NO = ?";
-				List<Object> param = new ArrayList<Object>();
-				
-				param.add(board.get("BOARD_NO"));
-				return JDBCUtil.update(sql, param);
-			}
-	
-			
-/////////////////////////////////////////////////////////////////////////////////
-			
-			
-//MNG_INSERT_MENU [2.메뉴 추가]
-public int insertMenu(String type, String name, int price, String detail){
-String sql = "INSERT INTO B_MENU(MENU_ID, MEMU_NAME, MENU_PRICE, MENU_DETAIL, MEMU_ACTIVE) VALUES(? || MAX(TO_NUMBER(SUBSTR(NVL(MENU_ID,0), 2)))+1, ?, ?, ?, ?)";
-List<Object> param = new ArrayList<Object>();
 
-param.add(type);
-param.add(name);
-param.add(price);
-param.add(detail);
-param.add("on");
-return JDBCUtil.update(sql, param);
+	
+	//게시판 관리 : 글 수정, 삭제, 작성
+	
+		//글 수정
+		public int editPost(String title, String content, Map<String, Object> board){
+			String sql = "UPDATE B_BOARD SET BOARD_TITLE = ?, BOARD_CONTENT = ? WHERE BOARD_NO = ?";
+			List<Object> param = new ArrayList<Object>();
+			
+			int num = (int)board.get("BOARD_NO");
+			
+			param.add(title);
+			param.add(content);
+			param.add(num);
+			
+			return JDBCUtil.update(sql, param);
+		}
+		
+		
+	/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//글 삭제
+		public int deletePost(Map<String, Object> board) {
+			String sql = "DELETE FROM B_BOARD WHERE BOARD_NO = ?";
+			List<Object> param = new ArrayList<Object>();
+			
+			param.add(board.get("BOARD_NO"));
+			return JDBCUtil.update(sql, param);
+		}
+		
+		
+	/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//글 작성
+		public int insertPost(List<Object> input) {
+			String sql = "INSERT INTO B_BOARD(BOARD_NO, BOARD_CODE, BOARD_TITLE, BOARD_CONTENT, BOARD_NN, BOARD_DATE) VALUES( (SELECT MAX(NVL(BOARD_NO, 0))+1, ?, ?, ?, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin'), SYSDATE)";
+			
+			return JDBCUtil.update(sql, input);
+		}	
+
 }
-
-	
-/////////////////////////////////////////////////////////////////////////////////
-
-	
-	//MNG_ACT_MENU [3.메뉴 항목 활성화]
-	
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-	//MNG_ORDER [2.예약 관리]
-	
-	
-	//예약 관리?
-	public List<Map<String, Object>> mngOrder(){
-		String sql = "SELECT RSV_OD, RSV_DATE, RSV_ETC, MEM_ID, RSV_APRV FROM B_RSV WHERE RSV_DATE > SYSDATE";
-		return JDBCUtil.selectList(sql);
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-	
-	
-	//앞으로 찾아갈 승인된 예약 주문들
-	public List<Map<String, Object>> aprvedOrder(){
-		String sql = "SELECT RSV_OD, RSV_PIKCUP, RSV_ETC, MEM_ID FROM B_RSV WHERE RSV_APRV LIKE '승인' AND RSV_PICKUP > SYSDATE";
-		return JDBCUtil.selectList(sql);
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-	
-	
-	//새로 예약해서 승인을 기다리는 주문 들
-	public List<Map<String, Object>> newOrder(){
-		String sql = "SELECT R.RSV_OD, M.MENU_NAME, (R.RSV_QTY || '개'), R.RSV_DATE, R.RSV_ETC, R.MEM_ID, R.RSV_APRV FROM B_RSV R, B_MENU M WHERE M.MENU_ID = r.RSV_CODE AND RSV_APRV LIKE '신청'";
-		return JDBCUtil.selectList(sql);
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-	//MNG_REVIEW [3.한줄평 관리]
-	
-	
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-	//MNG_BAKING [4.생산량 관리]
-	
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-	//MNG_SALES [5.매출 관리]
-	
-	
-
-
-
-} 
