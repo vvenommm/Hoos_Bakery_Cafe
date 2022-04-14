@@ -44,10 +44,12 @@ public class Controller {
 			case View.BOARD_POSTING: view = boardService.posting(); break; //글 등록
 			case View.MANAGEMENT: view = mngService.mngList(); break; //관리 페이지 홈
 			case View.MNG_MENU: view = mngService.mngProd(); break; //메뉴 관리
-			case View.MNG_INSERT_MENU: view = mngService.insertMenu(); break;
-			case View.MNG_EDIT_MENU: view = mngService.editMenu(); break;
-			case View.MNG_DEL_MENU: view = mngService.delMenu(); break;
-			case View.MNG_ACT_MENU: view = mngService.actMenu(); break;
+			case View.MNG_LIST_MENU: view = mngService.listMenu(); break; //메뉴 항목 추가
+			case View.MNG_READ_MENU: view = mngService.readMenu(); break; //메뉴 항목 추가
+			case View.MNG_INSERT_MENU: view = mngService.insertMenu(); break; //메뉴 항목 추가
+			case View.MNG_ACT_MENU: view = mngService.actMenu(); break; //메뉴 항목 활성화
+			case View.MNG_ACTIVATED: view = mngService.activateMenu(); break; //메뉴 항목 활성화
+			case View.MNG_DEACTIVATED: view = mngService.deactvMenu(); break; //메뉴 항목 활성화
 			case View.MNG_ORDER: view = mngService.mngOrder(); break; //예약주문 관리
 			case View.MNG_REVIEW: view = mngService.mngReview(); break; //한줄평 관리
 			case View.MNG_BAKING: view = mngService.mngBaking(); break; //당일 생산량 관리
@@ -65,7 +67,7 @@ public class Controller {
 	//관리자용 홈
 	private int adminHome() {
 		System.out.println("[1.마이페이지 2.메뉴 3.게시판 4.예약(케이크/단체주문) 5.관리자 페이지 9.로그아웃 0.프로그램 종료]");
-		int input =ScanUtil.nextInt2();
+		int input =ScanUtil.nextInt();
 		switch(input) {
 		case 1:return View.MYPAGE;
 		case 2:return View.MENU;
@@ -83,7 +85,7 @@ public class Controller {
 	//회원용 홈
 	private int memHome() {
 		System.out.println("[1.마이페이지 2.메뉴 3.게시판 4.예약(케이크/단체주문) 9.로그아웃 0.프로그램 종료]");
-		int input =ScanUtil.nextInt2();
+		int input =ScanUtil.nextInt();
 		switch(input) {
 		case 1:return View.MYPAGE;
 		case 2:return View.MENU;
@@ -100,7 +102,7 @@ public class Controller {
 	//비회원용 홈
 	private int home() {
 		System.out.println("[1.로그인 2.메뉴 3.게시판 4.예약(케이크/단체주문) 9.회원가입 0.프로그램 종료]");
-		int input =ScanUtil.nextInt2();
+		int input =ScanUtil.nextInt();
 		switch(input) {
 		case 1:return View.LOGIN;
 		case 2:return View.MENU;
