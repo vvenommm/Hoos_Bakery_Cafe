@@ -62,12 +62,13 @@ public class ManagementService {
 			List<Map<String, Object>> list = mngDao.breadList();
 			
 			System.out.println("-------");
-			System.out.println("이름\t가격\t활성상태");
+			System.out.println("이름\t가격\t상세설명");
 			
 			for(int i = 0; i < list.size(); i++) {//빵
 				for(Map<String, Object> menu : list) {
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
+					System.out.print(menu.get("MENU_DETAIL"));
 					System.out.print("\n");
 //					System.out.println(menu.get("MENU_ACTIVE"));
 				}
@@ -78,6 +79,7 @@ public class ManagementService {
 				for(Map<String, Object> menu : list) {
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
+					System.out.print(menu.get("MENU_DETAIL"));
 					System.out.print("\n");
 //					System.out.println(menu.get("MENU_ACTIVE"));
 				}
@@ -88,6 +90,7 @@ public class ManagementService {
 				for(Map<String, Object> menu : list) {
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
+					System.out.print(menu.get("MENU_DETAIL"));
 					System.out.print("\n");
 //					System.out.println(menu.get("MENU_ACTIVE"));
 				}
@@ -98,6 +101,7 @@ public class ManagementService {
 				for(Map<String, Object> menu : list) {
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
+					System.out.print(menu.get("MENU_DETAIL"));
 					System.out.print("\n");
 //					System.out.println(menu.get("MENU_ACTIVE"));
 				}
@@ -138,7 +142,7 @@ public class ManagementService {
 				System.out.println("번호\t메뉴명\t가격\t상세 설명");
 				System.out.println(" ──────────────────────");
 				for(Map<String, Object> menu : menuList) {
-					System.out.print(menu.get("MENU_ID") + "\t"); //오류날 수도 있음
+					System.out.print(menu.get("MENU_ID") + "\t");
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
 					System.out.println(menu.get("MENU_DETAIL"));
@@ -164,7 +168,7 @@ public class ManagementService {
 				System.out.println("번호\t메뉴명\t가격\t상세 설명");
 				System.out.println(" ──────────────────────");
 				for(Map<String, Object> menu : menuList) {
-					System.out.print(menu.get("MENU_ID") + "\t"); //오류날 수도 있음
+					System.out.print(menu.get("MENU_ID") + "\t");
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
 					System.out.println(menu.get("MENU_DETAIL"));
@@ -190,7 +194,7 @@ public class ManagementService {
 				System.out.println("번호\t메뉴명\t가격\t상세 설명");
 				System.out.println(" ──────────────────────");
 				for(Map<String, Object> menu : menuList) {
-					System.out.print(menu.get("MENU_ID") + "\t"); //오류날 수도 있음
+					System.out.print(menu.get("MENU_ID") + "\t");
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
 					System.out.println(menu.get("MENU_DETAIL"));
@@ -216,7 +220,7 @@ public class ManagementService {
 				System.out.println("번호\t메뉴명\t가격\t상세 설명");
 				System.out.println(" ──────────────────────");
 				for(Map<String, Object> menu : menuList) {
-					System.out.print(menu.get("MENU_ID") + "\t"); //오류날 수도 있음
+					System.out.print(menu.get("MENU_ID") + "\t");
 					System.out.print(menu.get("MENU_NAME") + "\t");
 					System.out.print(menu.get("MENU_PRICE") + "\t");
 					System.out.println(menu.get("MENU_DETAIL"));
@@ -393,7 +397,7 @@ public class ManagementService {
 		
 		//MNG_ACTIVATED [1.메뉴 부활시키기]
 		public int activateMenu() {
-			System.out.println("<비활성 메뉴 목록");
+			System.out.println("<비활성 메뉴 목록>");
 			List<Map<String, Object>> deactedList = mngDao.deactedList();
 			
 			System.out.println("┌─────────────────────┐");
@@ -412,9 +416,11 @@ public class ManagementService {
 			switch(input) {
 				case 1: //[1활성화 하기]
 					System.out.println("활성화 하려는 메뉴의 고유번호를 입력해주세요.\n->");
-					input = ScanUtil.nextInt();
+					String code = ScanUtil.nextLine();
 					
-					int result = mngDao.actvating(input);
+					int result = mngDao.actvating(code);
+					
+					System.out.println(result);
 					
 					if(result == 1) {
 						System.out.println("활성화 성공!");
@@ -454,9 +460,9 @@ public class ManagementService {
 			switch(input) {
 				case 1: //[1활성화 하기]
 					System.out.println("비활성화 하려는 메뉴의 고유번호를 입력해주세요.\n->");
-					input = ScanUtil.nextInt();
+					String code = ScanUtil.nextLine();
 					
-					int result = mngDao.deactvating(input);
+					int result = mngDao.deactvating(code);
 					
 					if(result == 1) {
 						System.out.println("비활성화 성공!");
@@ -482,11 +488,13 @@ public class ManagementService {
 		//MNG_ORDER 예약 관리 홈
 		public int mngOrder() {
 			System.out.println("<예약 목록>");
-			System.out.println("예약 번호\t수령일\t비고\t예약자");
+			System.out.println("예약일\t예약 번호\t수령일\t비고\t예약자");
 			System.out.println("--------------------------------");
 			List<Map<String, Object>> list = mngDao.aprvedOrder();
 			for(int i = 0; i < list.size(); i++) {//앞으로 가져갈 주문들
 				for(Map<String, Object> order : list) {
+					System.out.println(i);
+					System.out.print(order.get("RSV_PO") + "\t");
 					System.out.print(order.get("RSV_OD") + "\t");
 					System.out.print(order.get("RSV_PICKUP") + "\t");
 					System.out.print(order.get("RSV_ETC") + "\t");
@@ -494,68 +502,104 @@ public class ManagementService {
 				}
 			}
 			System.out.println("--------------------------------");
-			System.out.println("[1.조회 2.예약 승인하기 3. 3.거절한 주문 목록 보기 9.뒤로가기 0.홈으로].");
+			System.out.println("[1.조회 2.새로운 예약 확인하기 3.거절한 예약 목록 보기 9.뒤로가기 0.홈으로].");
+			
 			int input = ScanUtil.nextInt();
 			switch (input) {
 			case 1:
-				mngReadOrder();
+				readOrder(); //[1.조회]
 				break;
-				
 			case 2:
-				Map<String, Object> map = new HashMap<String, Object>();
-				
-				System.out.println("제목 : ");
-				String title = ScanUtil.nextLine();
-				map.put("TITLE", title);
-				System.out.println("내용 : ");
-				String contents = ScanUtil.nextLine();
-				map.put("CONTENTS", contents);
-				
-				return View.BOARD_LIST;
-				
-			case 0:
-				UserService.LoginMember = null;
-				return View.HOME;
+				orderAprv(); //[2.예약 승인하기]
+				break;
+			case 3: //[3.거절한 예약 목록 보기]
+				orderDenied();
+				break;
+			case 9: //[9.뒤로가기]
+				return View.MANAGEMENT;
+			case 0: //[0.홈으로]
+				return View.ADMIN_HOME;
 			}
-			
-			return 0;
+			return View.ADMIN_HOME;
 		}
 
 		
 		/////////////////////////////////////////////////////////////////////////////////
 		
 		
-		private void mngReadOrder() {
-			System.out.println("예약 목록에서 조회하려는 주문 번호를 입력해주세요.\n->");
-			int input = ScanUtil.nextInt();
+		//MNG_ORDER [2.예약 관리] - [1.조회]
+		private void readOrder() {
+			System.out.println("예약 목록에서 조회하려는 예약 번호를 입력해주세요.\n->");
+			int rsvNum = ScanUtil.nextInt();
+			Map<String, Object> order = mngDao.readOrder(rsvNum);
+			
+			System.out.println("┌─────────────────────┐");
+			System.out.println("예약 번호\t수령일");
+			System.out.println("글번호 : " + order.get("RSV_OD"));
+			System.out.println(order.get("RSV_PICKUP"));
+			System.out.println(" ──────────────────────");
+			System.out.print("작성자 : " + order.get("MEM_NNAME") + "\t작성일 : " + order.get("BOARD_DATE") + "\n\n");
+			System.out.println(order.get("BOARD_CONTENT"));
+			System.out.println("└─────────────────────┘");
 		}
 
 
+		
+		
+		
+	
 		/////////////////////////////////////////////////////////////////////////////////
 
 		
 		//MNG_ORDER 예약주문 관리
-		public int mngOrderAprv() {
-			System.out.println("<승인을 기다리는 예약 목록>");
-			System.out.println("예약 번호\t예약한 메뉴\t수량\t수령일\t예약자\t승인");
-			System.out.println("--------------------------------");
-			List<Map<String, Object>> list = mngDao.newOrder();
-			for(int i = 0; i < list.size(); i++) {//새 예약 주문 출력
-				for(Map<String, Object> order : list) {
-					System.out.print(order.get("RSV_OD") + "\t");
-					System.out.print(order.get("RSV_CODE") + "\t");
-					System.out.print(order.get("RSV_QTY") + "\t");
-					System.out.print(order.get("RSV_DATE") + "\t");
-					System.out.print(order.get("MEM_ID") + "\t");
-					System.out.println(order.get("RSV_APRV") + "\t");
-				}
-			}
-			System.out.println("--------------------------------");
-			System.out.println("[1.예약 승인 2.");
-			
-			return 0;
-		}
+	      public int orderAprv() {
+	         System.out.println("<승인을 기다리는 예약 목록>");
+	         System.out.println("예약 번호\t예약한 메뉴\t수량\t수령일\t예약자\t승인");
+	         System.out.println("--------------------------------");
+	         List<Map<String, Object>> list = mngDao.newOrder();
+	         for(int i = 0; i < list.size(); i++) {//새 예약 주문 출력
+	            for(Map<String, Object> order : list) {
+	               System.out.print(order.get("RSV_OD") + "\t");
+	               System.out.print(order.get("RSV_PICKUP") + "\t");
+	               System.out.print(order.get("RSV_ETC") + "\t");
+	               System.out.print(order.get("MEM_ID") + "\t");
+	               System.out.println(order.get("RSV_APRV") + "\t");
+	            }
+	         }
+	         System.out.println("--------------------------------");
+	         System.out.println("[1.예약 승인 0.뒤로가기]");
+	         int input = ScanUtil.nextInt();
+	         switch(input) {
+	         case 1:
+	            System.out.println("승인할 번호를 입력하세요.");
+	            String orderNum = ScanUtil.nextLine();
+	            
+	            for(int i = 0; i < list.size(); i++) {
+		            for(Map<String, Object> order : list) {
+		            	if(orderNum.contentEquals((String)order.get("RSV_OD"))){
+		            		System.out.println("예약 승인하시겠습니까? [1.Y 2.N]");
+		            		int agree= ScanUtil.nextInt();
+		            		if(agree == 1) {
+		            			mngDao.changeAprv(orderNum);
+		            			return View.MNG_ORDER;
+		            		}else {
+		            			System.out.println("이전 화면으로 이동합니다.");
+		            			return View.MNG_ORDER_APRV;
+		            		}
+		            	}
+		            }
+	            
+	            }
+            }
+			return View.MNG_ORDER_APRV;
+         }
 
+	      /////////////////////////////////////////////////////////////////////////////////
+	      
+	  	private void orderDenied() {
+			// TODO Auto-generated method stub
+			
+		}
 
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
