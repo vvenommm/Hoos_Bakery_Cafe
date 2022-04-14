@@ -7,11 +7,12 @@ public interface View {
 	int MEM_HOME = 11;//로그인(회원) 홈
 	int ADMIN_HOME = 12; //로그인(관리자) 홈
 	
-	//은태
+	//은태 & 피피티
 	int JOIN = 2; //회원가입
 	int JOIN_AGREE = 21; //회원가입 시 개인정보 수집 및 동의 화면
 	
 	int LOGIN = 3; //로그인 화면
+	int LOGOUT = 32; //로그아웃
 	
 	//은실
 	int MENU = 4; //메뉴 화면
@@ -24,26 +25,30 @@ public interface View {
 	int BOARD_NOTICE = 51; //공지사항 글목록
 	int BOARD_EVENT = 52; //이벤트 글목록
 	int BOARD_READ = 53; //특정 글 조회 화면
-	int BOARD_EDIT = 531; //특정 글 조회 후 수정
-	int BOARD_DELETE = 532; //특정 글 조회 후 삭제
 	int BOARD_POSTING = 54; //게시판에 글 등록
 	
+	//은실
 	int MYPAGE = 6; //로그인(회원) 후 마이페이지 화면
 	int MYPAGE_INFO = 61; //내정보 보기 화면
-	int MYPAGE_EDIT = 611; //내정보 수정 화면
+//	int MYPAGE_EDIT = 611; //내정보 수정 화면
 	int MYPAGE_PURCHASE = 62; //내 구매 내역 화면
-	int MYPAGE_RSV = 63; //예약 현황 화면
+	int MYPAGE_ORDER = 63; //예약 현황 화면
 	int MYPAGE_REVIEW = 64; //내 한줄평 화면
 	
-	int RSV = 6; //예약하는 화면
+	//정후
+	int ORDER= 6; //예약하는 화면
 	
+	//정후
 	int MANAGEMENT = 7; //로그인(관리자) 후 관리자 페이지
-	int MNG_PROD = 71; //메뉴 관리
-	int MNG_RSV = 72; //예약 관리
-	int MNG_BOARD = 73; //게시판 관리
-	int MNG_REVIEW = 74; //한줄평 관리
-	int MNG_ORDER = 75; //생산량 관리
-	int MNG_SALES = 76; //매출 관리
+	int MNG_MENU = 71; //메뉴 관리
+	int MNG_INSERT_MENU = 711;
+	int MNG_EDIT_MENU = 712;
+	int MNG_DEL_MENU = 713;
+	int MNG_ACT_MENU = 714;
+	int MNG_ORDER = 72; //예약 관리
+	int MNG_REVIEW = 73; //한줄평 관리
+	int MNG_BAKING = 74; //생산량 관리
+	int MNG_SALES = 75; //매출 관리
 	
 	//04.10 정후: 우리 최소 이만큼이 필요하고 작업하다보면 더 생길 수도 있어요
 }
