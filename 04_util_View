@@ -41,10 +41,12 @@ public interface View {
 	//정후
 	int MANAGEMENT = 7; //로그인(관리자) 후 관리자 페이지
 	int MNG_MENU = 71; //메뉴 관리
-	int MNG_INSERT_MENU = 711;
-	int MNG_EDIT_MENU = 712;
-	int MNG_DEL_MENU = 713;
+	int MNG_LIST_MENU = 711;
+	int MNG_READ_MENU = 712;
+	int MNG_INSERT_MENU = 713;
 	int MNG_ACT_MENU = 714;
+	int MNG_ACTIVATED = 715;
+	int MNG_DEACTIVATED = 716;
 	int MNG_ORDER = 72; //예약 관리
 	int MNG_REVIEW = 73; //한줄평 관리
 	int MNG_BAKING = 74; //생산량 관리
