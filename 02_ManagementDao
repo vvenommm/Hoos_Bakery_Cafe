@@ -255,7 +255,6 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
-	//MNG_ORDER [2.예약 관리] - [1.조회]
 	public Map<String, Object> readOrder(int rsvNum) {
 		String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_BOARD WHERE BOARD_NO = ?";
 		List<Object> param = new ArrayList<Object>();
@@ -265,20 +264,52 @@ public class ManagementDao {
 	}
 	
 	
-	
 /////////////////////////////////////////////////////////////////////////////////
 
 	
 	//MNG_ORDER [2.예약 관리] - [2.예약 승인하기]
-	public Map<String, Object> orderAprv(int rsvNum) {
-		String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_BOARD WHERE BOARD_NO = ?";
-		List<Object> param = new ArrayList<Object>();
-
-		param.add(rsvNum);
-		return JDBCUtil.selectOne(sql, param);
-	}
+	
+	//새로 예약해서 승인을 기다리는 주문 목록
+		public List<Map<String, Object>> newOrder(){
+			String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_RSV WHERE RSV_APRV LIKE '신청'";
+			return JDBCUtil.selectList(sql);
+		}
+		
+//	//	대기 중인 주문 선택
+//	public Map<String, Object> getOrder(int rsvNum) {
+//		String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_BOARD WHERE BOARD_NO = ?";
+//		List<Object> param = new ArrayList<Object>();
+//
+//		param.add(rsvNum);
+//		return JDBCUtil.selectOne(sql, param);
+//	}
+	
+	//'신청'에서 승인으로
+	   public int chgAprv(String orderNum) {
+	      String sql = "UPDATE B_RSV SET RSV_APRV = ? WHERE RSV_OD = ?";
+	      List<Object>param = new ArrayList<Object>();
+	      
+	      param.add("'승인'");
+	      param.add(orderNum);
+	      return JDBCUtil.update(sql, param);
+	            
+	   }
 	
 	
+/////////////////////////////////////////////////////////////////////////////////
+	   
+	   
+	   //'신청'에서 거절로
+	 //'신청'에서 승인으로
+	   public int chgDeny(String orderNum) {
+	      String sql = "UPDATE B_RSV SET RSV_APRV = ? WHERE RSV_OD = ?";
+	      List<Object>param = new ArrayList<Object>();
+	      
+	      param.add("'거절'");
+	      param.add(orderNum);
+	      return JDBCUtil.update(sql, param);
+	            
+	   }
 /////////////////////////////////////////////////////////////////////////////////
 
 	
@@ -296,14 +327,6 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
-	//새로 예약해서 승인을 기다리는 주문 들
-	public List<Map<String, Object>> newOrder(){
-		String sql = "SELECT RSV_OD, RSV_PICKUP, RSV_ETC, MEM_ID, RSV_APRV FROM B_RSV WHERE RSV_APRV LIKE '신청'";
-		return JDBCUtil.selectList(sql);
-	}
-	
-	
-	
 	//예약 주문 선택
 	   public Map<String, Object> selectOrder(int input2){
 	      String sql = "SELECT * FROM B_RSV WHERE TRIM(RSV_OD) = ?";
@@ -312,15 +335,7 @@ public class ManagementDao {
 	      return JDBCUtil.selectOne(sql, param);
 	   }
 	   
-	   //RSV_APRV 변경
-	   public int changeAprv(String orderNum) {
-	      String sql = "UPDATE B_RSV SET RSV_APRV = ? WHERE RSV_OD = ?";
-	      List<Object>param = new ArrayList<Object>();
-	      param.add(orderNum);
-	      param.add("'승인'");
-	      return JDBCUtil.update(sql, param);
-	            
-	   }
+	   
 
 
 	
@@ -346,7 +361,6 @@ public class ManagementDao {
 	//MNG_SALES [5.매출 관리]
 	
 	
-
 
 
 } 
