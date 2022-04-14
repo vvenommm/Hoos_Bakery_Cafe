@@ -15,7 +15,7 @@ public class BoardDao {
 					
 	}
 	private static BoardDao instance;
-	public static BoardDao getInstance() { 
+	private static BoardDao getInstance() { 
 		if(instance == null) {
 			instance = new BoardDao();
 		}
@@ -27,13 +27,9 @@ public class BoardDao {
 	
 	
 	//모든 글 출력
-	public List<Map<String, Object>> allBoardList(){
+	private List<Map<String, Object>> allBoardList(){
 		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD";
 		return JDBCUtil.selectList(sql);
-	}
-	
-	public int readBoard(List<Map<String, Object>> boardList) {
-		return View.BOARD_NOTICE;
 	}
 	
 	
@@ -41,13 +37,9 @@ public class BoardDao {
 	
 	
 	//공지사항 출력
-	public List<Map<String, Object>> noticeList(){
+	private List<Map<String, Object>> noticeList(){
 		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 1";
 		return JDBCUtil.selectList(sql);
-	}
-	
-	public int readNotice(List<Map<String, Object>> noticeList) {
-		return View.BOARD_NOTICE;
 	}
 	
 	
@@ -55,13 +47,9 @@ public class BoardDao {
 	
 	
 	//이벤트 출력
-	public List<Map<String, Object>> eventList(){
+	private List<Map<String, Object>> eventList(){
 		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 2";
 		return JDBCUtil.selectList(sql);
-	}
-	
-	public int readEvent(List<Map<String, Object>> eventList) {
-		return View.BOARD_NOTICE;
 	}
 	
 	
@@ -69,7 +57,7 @@ public class BoardDao {
 
 	
 	//글읽기
-	public Map<String, Object> readPost(int boardNo){
+	private Map<String, Object> readPost(int boardNo){
 		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_NO = ?";
 		List<Object> param = new ArrayList<Object>();
 
@@ -80,10 +68,11 @@ public class BoardDao {
 	
 /////////////////////////////////////////////////////////////////////////////////
 
+	
 	//게시판 관리 : 글 수정, 삭제, 작성
 	
 		//글 수정
-		public int editPost(String title, String content, Map<String, Object> board){
+		private int editPost(String title, String content, Map<String, Object> board){
 			String sql = "UPDATE B_BOARD SET BOARD_TITLE = ?, BOARD_CONTENT = ? WHERE BOARD_NO = ?";
 			List<Object> param = new ArrayList<Object>();
 			
@@ -101,7 +90,7 @@ public class BoardDao {
 		
 		
 		//글 삭제
-		public int deletePost(Map<String, Object> board) {
+		private int deletePost(Map<String, Object> board) {
 			String sql = "DELETE FROM B_BOARD WHERE BOARD_NO = ?";
 			List<Object> param = new ArrayList<Object>();
 			
@@ -114,8 +103,8 @@ public class BoardDao {
 		
 		
 		//글 작성
-		public int insertPost(List<Object> input) {
-			String sql = "INSERT INTO B_BOARD(BOARD_NO, BOARD_CODE, BOARD_TITLE, BOARD_CONTENT, BOARD_NN, BOARD_DATE) VALUES( (SELECT NVL(BOARD_NO, 0)+1, ?, ?, ?, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin'), SYSDATE)";
+		private int insertPost(List<Object> input) {
+			String sql = "INSERT INTO B_BOARD(BOARD_NO, BOARD_CODE, BOARD_TITLE, BOARD_CONTENT, BOARD_NN, BOARD_DATE) VALUES( (SELECT MAX(NVL(BOARD_NO, 0))+1, ?, ?, ?, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin'), SYSDATE)";
 			
 			return JDBCUtil.update(sql, input);
 		}	
