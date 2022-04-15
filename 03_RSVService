@@ -1,5 +1,6 @@
 package service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,33 +37,42 @@ public class RSVService {
 	
 	//[4.예약 바구니] 선택 시 예약 바구니의 홈
 	public int rsvCart() {
-		int totalPrice = 0;
+		Map<String, Object>svRow = new HashMap<String, Object>();
 		System.out.println("예약 바구니에 담은 메뉴들");
 		List<Map<String, Object>>rsvMenuList = rsvDao.rsvCart();
 		System.out.println("┌─────────────────────┐");
-		System.out.println("\t메뉴명\t수량\t개수");
+		System.out.println("\t메뉴명\t수량\t금액");
 		System.out.println(" ──────────────────────");
 		for(Map<String, Object>row : rsvMenuList) {
+			if(row.get("MENU_NAME").equals("총합")) {
+				svRow = row;
+				String total1 = (String) row.get("MENU_NAME");
+				int total2 = (int) row.get("CART_QTY");
+				int total3 = (int) row.get("MENU_PRICE");
+				break;}
+				
 			System.out.print(row.get("CART_NO") + "\t");
 			System.out.print(row.get("MENU_NAME") + "\t");
 			System.out.print(row.get("CART_QTY") + "\t");
-			System.out.println(row.get("MENU_PRICE") + "\t");
-			totalPrice = (int)row.get("TOTAL_PRICE");
+			System.out.println(row.get("MENU_PRICE"));
+			
 		}
+		System.out.println(" ──────────────────────");
+		System.out.println(svRow.get("MENU_NAME") + "\t" +svRow.get("CART_QTY") +"개"+ "\t" +svRow.get("MENU_PRICE")+"원" );
 		System.out.println("└─────────────────────┘");
-		System.out.println("총 금액 : " + totalPrice);
 		
 		
-		System.out.println("[1.예약 주문하기 2.수량 수정하기 3.메뉴 삭제하기 9.뒤로가기 0.홈으로]");
+		System.out.println("[1.예약 주문 완료하기 2.수량 수정하기 3.메뉴 삭제하기 9.뒤로가기 0.홈으로]");
 		int input = ScanUtil.nextInt();
 		switch(input) {
 		case 1: //[1.예약 주문하기]
-			rsvPch(rsvMenuList);
+			return View.RSV_PURCHASE ;
 		case 2: //[2.수정하기]
-			editPch(rsvMenuList);
+			return View.RSV_EDIT_PURCHASE;
 		case 3: //[3.삭제하기]
-			delPch(rsvMenuList);
+			return View.RSV_DEL_PURCHASE;
 		case 4: // [9.뒤로가기]
+			return View.RSV_HOME;
 		case 5: //[0.홈으로]
 			return View.MEM_HOME;
 		}
@@ -74,23 +84,37 @@ public class RSVService {
 	
 	
 	//[4.예약 바구니] ->[1.예약 주문하기]
-	public int rsvPch(List<Map<String, Object>>rsvMenuList) {
+	public int rsvPch() {
+		List<Map<String, Object>>rsvMenuList = rsvDao.rsvCart();
+		Map<String, Object>svRow = new HashMap<String, Object>();
+		for(Map<String, Object>row : rsvMenuList) {
+			if(row.get("MENU_NAME").equals("총합")) {
+				svRow = row;
+				}
+			}
+		int totalPrice = (int) svRow.get("MENU_PRICE");
+		
 		System.out.println("예약 주문을 완료 하시겠습니까?\n[1.네 2.아니오]");
 		int input = ScanUtil.nextInt();
 		
 		switch(input) {
 		
 		case 1://주문하기
-			int mileageUsed = 0;
-			String memId = (String) userService.LoginMember.get("MEM_ID");
+			int mUsed = 0;
+			
+			System.out.println("수령일을 'MMDD' 형식으로 입력해주세요.\n->");
+			String pickup = ScanUtil.nextLine();
 			
 			System.out.println("보유 적립금 : " + userService.LoginMember.get("MEM_MILEAGE"));
 			if(1000<=(int)userService.LoginMember.get("MEM_MILEAGE")) {
 				System.out.println("사용할 적립금을 입력해주세요.\n사용하지 않으시려면 0을 입력해주세요.");
-				mileageUsed = ScanUtil.nextInt();
+				mUsed = ScanUtil.nextInt();
 			}else if(1000>(int)userService.LoginMember.get("MEM_MILEAGE")) {
 				System.out.println("사용할 수 있는 적립금이 없습니다.");
 			}
+			String memId = (String) userService.LoginMember.get("MEM_ID");
+			int myMile = (int) userService.LoginMember.get("MEM_MILEAGE");
+			int mWill = (int) ((myMile - mUsed) + (totalPrice - mUsed)*1.05);
 			
 			System.out.println("기타 전달사항을 작성해주세요.\n(예 : 3시에 가지러 갈게요~ / 3개씩 담아주세요 등)");
 			String etc = ScanUtil.nextLine();
@@ -98,7 +122,7 @@ public class RSVService {
 			System.out.println("결제 하시겠습니까?\n[1.네 2.아니오]");
 			input = ScanUtil.nextInt();
 			if(input == 1) {
-				int result = rsvDao.rsvToRC(memId, mileageUsed);
+				int result = rsvDao.rsvToRC(memId, myMile, mUsed, mWill, totalPrice, pickup, etc);
 				
 				for(Map<String, Object>row : rsvMenuList) {
 					String menuId = (String)row.get("MENU_ID");
@@ -107,6 +131,7 @@ public class RSVService {
 				
 				if(result == 1) {
 					System.out.println("결제가 완료되었습니다.");
+					rsvDao.emptyCart(memId);
 					return View.RSV_RECIEPT;
 				}
 				else {
@@ -124,9 +149,21 @@ public class RSVService {
 	
 	
 	//[4.예약 바구니] ->[2.수량 수정하기]
-	public int editPch(List<Map<String, Object>>rsvMenuList) {
+	public int editPch() {
+		List<Map<String, Object>>rsvMenuList = rsvDao.rsvCart();
+		
 		System.out.println("수량을 변경하려는 메뉴의 번호를 입력해주세요.");
-		return View.MEM_HOME;
+		int cartNo = ScanUtil.nextInt();
+		System.out.println("몇 개로 변경하시겠습니까?");
+		int cartQty = ScanUtil.nextInt();
+		
+		int result = rsvDao.editPch(cartQty, cartNo);
+		if(result == 1) {
+			System.out.println("수량 변경 성공!");
+		}else {
+			System.out.println("수량 변경에 실패하였습니다.\n예약 바구니로 이동합니다.");
+		}
+		return View.RSV_HOME;
 	}
 	
 	
@@ -134,8 +171,26 @@ public class RSVService {
 
 
 	//[4.예약 바구니] ->[3.메뉴 삭제하기]
-	public int delPch(List<Map<String, Object>>rsvMenuList) {
-		return View.MEM_HOME;
+	public int delPch() {
+		List<Map<String, Object>>rsvMenuList = rsvDao.rsvCart();
+		
+		System.out.println("삭제하려는 메뉴의 번호를 입력해주세요.");
+		int cartNo = ScanUtil.nextInt();
+		
+		System.out.println("삭제하시겠습니까?\n[1.네 2.아니오]");
+		int agree = ScanUtil.nextInt();
+		
+		if(agree == 1) {
+			int result = rsvDao.delPch(cartNo);
+			if(result == 1) {
+				System.out.println("삭제 성공!");
+			}else {
+				System.out.println("메뉴 삭제에 실패하였습니다.\n예약 바구니로 이동합니다.");
+			}
+		}else {
+			System.out.println("예약 바구니로 이동합니다.");
+		}
+		return View.RSV_HOME;
 	}
 	
 	
