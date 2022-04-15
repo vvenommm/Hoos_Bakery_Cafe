@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,35 @@ private RSVDao() {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
-	//예약 바구니에 넣은 상품 회원 구매 내역에 넣기
-	public int rsvPch() {
+	//예약 바구니 -> 결제 내역에 넣기
+	public int rsvToRC(String memId, int mileageUsed) {
+		String sql = "INSERT INTO B_RC(RC_DATE, RC_NO, MEM_ID, MEM_MILEAGE, RC_MUSED, RC_MWILL, RC_TP) "
+				+ "VALUES(SYSDATE, ?, (SELECT MEM_ID FROM B_MEMBER WHERE MEM_ID = ?), (SELECT MEM_MILEAGE FROM B_MEMBER WHERE MEM_ID = ?), ?, (SELECT MEM_MILEAGE FROM B_MEMBER WHERE MEM_ID = ?)-?, (SELECT SUM(CART_QTY * MENU_PRICE) FROM B_CART))";
+		List<Object> param = new ArrayList<Object>();
+		
+		//주문번호 넣기
+		param.add(memId);
+		param.add(memId);
+		param.add(mileageUsed);
+		param.add(mileageUsed);
+		
+		return JDBCUtil.update(sql, param);
+	}
+		
+		
+/////////////////////////////////////////////////////////////////////////////////
+
+		
+	//예약 바구니 -> 회원 구매 내역에 넣기
+	public int rsvToPCH(String memId, String menuId) {
+		String sql = "INSERT INTO B_RC(RC_NO, MENU_ID, CART_QTY, MENU_PRICE) VALUES((SELECT RC_NO FROM B_RC WHERE MEM_ID = ?), (SELECT MENU_ID FROM B_CART WHERE MENU_ID = ?), (SELECT CART_QTY FROM B_CART WHERE MENU_ID = ?), (SELECT MENU_PRICE FROM B_CART WHERE MENU_ID = ?))";
+		List<Object> param = new ArrayList<Object>();
+		
+		param.add(memId);
+		param.add(menuId);
+		param.add(menuId);
+		param.add(menuId);
+		
 		return JDBCUtil.update(sql, param);
 	}
 	
@@ -41,6 +69,6 @@ private RSVDao() {
 /////////////////////////////////////////////////////////////////////////////////
 
 	
-	//카트에 넣은 상품 결제 내역에 넣기
+	
 
 }
