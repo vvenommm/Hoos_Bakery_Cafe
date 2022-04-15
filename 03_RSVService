@@ -1,0 +1,110 @@
+package service;
+
+import java.util.List;
+import java.util.Map;
+
+import dao.RSVDao;
+import util.JDBCUtil;
+import util.ScanUtil;
+import util.View;
+
+public class RSVService {
+	
+	private RSVService() {
+		
+	}
+	private static RSVService instance;
+	public static RSVService getInstance() { 
+		if(instance == null) {
+			instance = new RSVService();
+		}  
+		return instance;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+
+	private static RSVDao rsvDao = RSVDao.getInstance();
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//[4.예약 바구니] 선택 시 예약 바구니의 홈
+	public int rsvCart() {
+		int totalPrice = 0;
+		System.out.println("예약 바구니에 담은 메뉴들");
+		List<Map<String, Object>>rsvMenuList = rsvDao.rsvCart();
+		System.out.println("┌─────────────────────┐");
+		System.out.println("\t메뉴명\t수량\t개수");
+		System.out.println(" ──────────────────────");
+		for(Map<String, Object>row : rsvMenuList) {
+			System.out.print(row.get("MENU_NAME") + "\t");
+			System.out.print(row.get("CART_QTY") + "\t");
+			System.out.println(row.get("MENU_PRICE") + "\t");
+			totalPrice = (int)row.get("TOTAL_PRICE");
+		}
+		System.out.println("└─────────────────────┘");
+		System.out.println("총 금액 : " + totalPrice);
+		
+		
+		System.out.println("[1.예약 주문하기 2.수정하기 3.삭제하기 9.뒤로가기 0.홈으로]");
+		int input = ScanUtil.nextInt();
+		switch(input) {
+		case 1: //[1.예약 주문하기]
+			
+		case 2: //[2.수정하기]
+		case 3: //[3.삭제하기]
+		case 4: // [9.뒤로가기]
+		case 5: //[0.홈으로]
+			return View.MEM_HOME;
+		}
+		return View.MEM_HOME;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//[4.예약 바구니] ->[1.예약 주문하기]
+	public int rsvPch(List<Map<String, Object>>rsvMenuList) {
+		System.out.println("예약 주문을 완료 하시겠습니까?\n[1.네 2.아니오]");
+		int input = ScanUtil.nextInt();
+		switch(input) {
+		case 1://주문하기
+			int result = rsvDao.rsvPch();
+			if(result == 1) {
+				//회원의 적립금 보여주기
+				System.out.println("");
+				System.out.println("결제가 완료되었습니다.");
+				return View.RSV_RECIEPT;
+				}
+			else {
+				System.out.println("앗, 결제 오류 발생!\n예약바구니로 이동합니다.");
+				return View.RSV_HOME;
+			}
+		case 2://뒤로가기
+			return View.RSV_HOME; //[4.예약 바구니]로 이동
+		}
+		return View.RSV_HOME;
+	}
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+}
