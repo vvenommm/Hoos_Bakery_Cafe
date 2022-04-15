@@ -19,13 +19,16 @@ private RSVDao() {
 		return instance;
 	}
 	
+	
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
 
 	//[4.예약 바구니] 선택 시 예약 바구니의 홈.
 	//예약 바구니에 있는 상품 출력
 	public List<Map<String, Object>> rsvCart() {
-		String sql = "SELECT C.CART_NO, M.MENU_NAME MENU_NAME, C.CART_QTY CART_QTY, (C.CART_QTY*C.MENU_PRICE) MENU_PRICE, (SELECT SUM(C.CART_QTY*C.MENU_PRICE) FROM B_CART) TOTAL_PRICE FROM B_CART C, B_MENU M WHERE C.MENU_ID = M.MENU_ID";
+		String sql = "SELECT C.CART_NO, M.MENU_NAME MENU_NAME, C.CART_QTY CART_QTY, (C.CART_QTY*C.MENU_PRICE) MENU_PRICE FROM B_CART C, B_MENU M WHERE C.MENU_ID = M.MENU_ID UNION ALL SELECT MAX(C.CART_NO)+1, '총합', SUM(C.CART_QTY), SUM(C.CART_QTY*C.MENU_PRICE) MENU_AMT FROM B_CART C, B_MENU M WHERE C.MENU_ID = M.MENU_ID ORDER BY CART_NO";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -33,26 +36,24 @@ private RSVDao() {
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
-	//예약 바구니 -> 결제 내역에 넣기
-	public int rsvToRC(String memId, int mileageUsed) {
-		String sql = "INSERT INTO B_RC(RC_DATE, RC_NO, MEM_ID, MEM_MILEAGE, RC_MUSED, RC_MWILL, RC_TP) "
-				+ "VALUES(SYSDATE, ?, (SELECT MEM_ID FROM B_MEMBER WHERE MEM_ID = ?), (SELECT MEM_MILEAGE FROM B_MEMBER WHERE MEM_ID = ?), ?, (SELECT MEM_MILEAGE FROM B_MEMBER WHERE MEM_ID = ?)-?, (SELECT SUM(CART_QTY * MENU_PRICE) FROM B_CART))";
+	//[4.예약 바구니] -> 결제 내역에 넣기
+	public int rsvToRC(String memId, int myMile, int mUsed, int mWill, int totalPrice, String pickup, String etc) {
+		String sql = "INSERT INTO B_RC(RC_NO, RC_DATE, MEM_ID, MEM_MILEAGE, RC_MUSED, RC_MWILL, RC_TP, RC_PICKUP, RC_ETC, RC_APRV) VALUES\r\n (((SELECT TO_CHAR(NVL(MAX(RC_NO),TO_CHAR(SYSDATE,'MMDD')||'000')+ 1,'0000000') FROM B_RC WHERE  SUBSTR(RC_NO,1,4)  = TO_CHAR(SYSDATE,'MMDD')), SYSDATE, ?, ?, ?, ?, ?, TO_CHAR(SYSDATE, 'YY') || ?, ?, '신청'))";
 		List<Object> param = new ArrayList<Object>();
 		
-		//주문번호 넣기
 		param.add(memId);
-		param.add(memId);
-		param.add(mileageUsed);
-		param.add(mileageUsed);
+		param.add(myMile);
+		param.add(mUsed);
+		param.add(mWill);
+		param.add(totalPrice-mUsed);
+		param.add(pickup);
+		param.add(etc);
 		
 		return JDBCUtil.update(sql, param);
 	}
 		
 		
-/////////////////////////////////////////////////////////////////////////////////
-
-		
-	//예약 바구니 -> 회원 구매 내역에 넣기
+	//[4.예약 바구니] -> 회원 구매 내역에 넣기
 	public int rsvToPCH(String memId, String menuId) {
 		String sql = "INSERT INTO B_RC(RC_NO, MENU_ID, CART_QTY, MENU_PRICE) VALUES((SELECT RC_NO FROM B_RC WHERE MEM_ID = ?), (SELECT MENU_ID FROM B_CART WHERE MENU_ID = ?), (SELECT CART_QTY FROM B_CART WHERE MENU_ID = ?), (SELECT MENU_PRICE FROM B_CART WHERE MENU_ID = ?))";
 		List<Object> param = new ArrayList<Object>();
@@ -66,9 +67,43 @@ private RSVDao() {
 	}
 	
 	
+	//장바구니 비우기
+	public int emptyCart(String memId) {
+		String sql = "DELETE ";
+		List<Object> param = new ArrayList<Object>();
+		
+		param.add(memId);
+		
+		return JDBCUtil.update(sql, param);
+	}
+	
+	
 /////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//[4.예약 바구니] ->[2.수량 수정하기]
+	public int editPch(int cartQty, int cartNo) {
+		String sql = "UPDATE B_CART SET CART_QTY = ? WHERE CART_NO = ?";
+		List<Object> param = new ArrayList<Object>();
+		
+		param.add(cartQty);
+		param.add(cartNo);
+		
+		return JDBCUtil.update(sql, param);
+	}
 
 	
+/////////////////////////////////////////////////////////////////////////////////
 	
+	
+	//[4.예약 바구니] ->[3.메뉴 삭제하기]
+	public int delPch(int cartNo) {
+		String sql = "DELETE FROM B_CART WHERE CART_NO = ?";
+		List<Object> param = new ArrayList<Object>();
+		
+		param.add(cartNo);
+		
+		return JDBCUtil.update(sql, param);
+	}
 
 }
