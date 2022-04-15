@@ -43,6 +43,7 @@ public class RSVService {
 		System.out.println("\t메뉴명\t수량\t개수");
 		System.out.println(" ──────────────────────");
 		for(Map<String, Object>row : rsvMenuList) {
+			System.out.print(row.get("CART_NO") + "\t");
 			System.out.print(row.get("MENU_NAME") + "\t");
 			System.out.print(row.get("CART_QTY") + "\t");
 			System.out.println(row.get("MENU_PRICE") + "\t");
@@ -52,13 +53,15 @@ public class RSVService {
 		System.out.println("총 금액 : " + totalPrice);
 		
 		
-		System.out.println("[1.예약 주문하기 2.수정하기 3.삭제하기 9.뒤로가기 0.홈으로]");
+		System.out.println("[1.예약 주문하기 2.수량 수정하기 3.메뉴 삭제하기 9.뒤로가기 0.홈으로]");
 		int input = ScanUtil.nextInt();
 		switch(input) {
 		case 1: //[1.예약 주문하기]
 			rsvPch(rsvMenuList);
 		case 2: //[2.수정하기]
+			editPch(rsvMenuList);
 		case 3: //[3.삭제하기]
+			delPch(rsvMenuList);
 		case 4: // [9.뒤로가기]
 		case 5: //[0.홈으로]
 			return View.MEM_HOME;
@@ -118,19 +121,23 @@ public class RSVService {
 		return View.RSV_HOME;
 	}
 /////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//[4.예약 바구니] ->[2.수량 수정하기]
+	public int editPch(List<Map<String, Object>>rsvMenuList) {
+		System.out.println("수량을 변경하려는 메뉴의 번호를 입력해주세요.");
+		return View.MEM_HOME;
+	}
+	
+	
 /////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
+
+	//[4.예약 바구니] ->[3.메뉴 삭제하기]
+	public int delPch(List<Map<String, Object>>rsvMenuList) {
+		return View.MEM_HOME;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
 }
