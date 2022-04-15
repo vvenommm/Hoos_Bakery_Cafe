@@ -28,6 +28,7 @@ public class RSVService {
 
 
 	private static RSVDao rsvDao = RSVDao.getInstance();
+	private static UserService userService = UserService.getInstance();
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,7 @@ public class RSVService {
 		int input = ScanUtil.nextInt();
 		switch(input) {
 		case 1: //[1.예약 주문하기]
-			
+			rsvPch(rsvMenuList);
 		case 2: //[2.수정하기]
 		case 3: //[3.삭제하기]
 		case 4: // [9.뒤로가기]
@@ -73,19 +74,44 @@ public class RSVService {
 	public int rsvPch(List<Map<String, Object>>rsvMenuList) {
 		System.out.println("예약 주문을 완료 하시겠습니까?\n[1.네 2.아니오]");
 		int input = ScanUtil.nextInt();
+		
 		switch(input) {
+		
 		case 1://주문하기
-			int result = rsvDao.rsvPch();
-			if(result == 1) {
-				//회원의 적립금 보여주기
-				System.out.println("");
-				System.out.println("결제가 완료되었습니다.");
-				return View.RSV_RECIEPT;
-				}
-			else {
-				System.out.println("앗, 결제 오류 발생!\n예약바구니로 이동합니다.");
-				return View.RSV_HOME;
+			int mileageUsed = 0;
+			String memId = (String) userService.LoginMember.get("MEM_ID");
+			
+			System.out.println("보유 적립금 : " + userService.LoginMember.get("MEM_MILEAGE"));
+			if(1000<=(int)userService.LoginMember.get("MEM_MILEAGE")) {
+				System.out.println("사용할 적립금을 입력해주세요.\n사용하지 않으시려면 0을 입력해주세요.");
+				mileageUsed = ScanUtil.nextInt();
+			}else if(1000>(int)userService.LoginMember.get("MEM_MILEAGE")) {
+				System.out.println("사용할 수 있는 적립금이 없습니다.");
 			}
+			
+			System.out.println("기타 전달사항을 작성해주세요.\n(예 : 3시에 가지러 갈게요~ / 3개씩 담아주세요 등)");
+			String etc = ScanUtil.nextLine();
+			
+			System.out.println("결제 하시겠습니까?\n[1.네 2.아니오]");
+			input = ScanUtil.nextInt();
+			if(input == 1) {
+				int result = rsvDao.rsvToRC(memId, mileageUsed);
+				
+				for(Map<String, Object>row : rsvMenuList) {
+					String menuId = (String)row.get("MENU_ID");
+					rsvDao.rsvToPCH(memId, menuId);
+				}
+				
+				if(result == 1) {
+					System.out.println("결제가 완료되었습니다.");
+					return View.RSV_RECIEPT;
+				}
+				else {
+					System.out.println("앗, 결제 오류 발생!\n예약바구니로 이동합니다.");
+					return View.RSV_HOME;
+				}
+			}
+			
 		case 2://뒤로가기
 			return View.RSV_HOME; //[4.예약 바구니]로 이동
 		}
