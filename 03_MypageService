@@ -40,13 +40,11 @@ private MypageService() {
 		int input = ScanUtil.nextInt();
 		switch(input) {
 			case 1: 
-				return View.MYPAGE_INFO; //내 정보 보기
+				return View.MYPAGE_INFO; //1. 내 정보 보기
 			case 2:
-				return View.MYPAGE_PURCHASE; //내 구매 내역
+				return View.MYPAGE_RESERVATION; //2. 내 예약 현황
 			case 3:
-				return View.MYPAGE_ORDER; //예약 현황
-			case 4:
-				return View.MYPAGE_REVIEW; //내가 쓴 한줄평
+				return View.MYPAGE_REVIEW; //3. 내가 쓴 한줄평
 			case 0:
 				try {
 					if (userService.LoginMember.get("MEM_ID").equals("admin")) { // 관리자 홈
@@ -132,10 +130,10 @@ private MypageService() {
         System.out.println();
         System.out.println("번호\t예약날짜\t예약번호\t\t총 금액\t예약자");
         System.out.println("---------------------------------------------------------");
-        List<Map<String, Object>> list = mypageDao.myReservInfo();
+        List<Map<String, Object>> list = mypageDao.myReserv();
            for(int i =1; i < list.size()+1 ; i++) {
            for (Map<String, Object> info : list) {
-        	   System.out.print(i + "\t");
+        	  System.out.print(i + "\t");
               System.out.print(info.get("RC_DATE") + "\t");
               System.out.print(info.get("RC_NO") + "\t");
               System.out.print(info.get("RC_TP") + "\t");
