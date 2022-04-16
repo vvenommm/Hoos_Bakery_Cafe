@@ -1,0 +1,93 @@
+package dao;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import service.UserService;
+import util.JDBCUtil;
+
+public class MypageDao {
+	
+	//싱글톤 패턴
+		public MypageDao() {
+				
+		}
+		public static MypageDao instance; 
+		public static MypageDao getInstance() { 
+			if(instance == null) {
+				instance = new MypageDao();
+			}
+			return instance;
+		}
+		
+		
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//[1.마이페이지] -> [1.내정보 보기]
+		//전화번호 중복 확인 매서드
+		public Map<String, Object> bringNumber(String memNumber){
+			String sql ="SELECT MEM_NUMBER"
+					+ "		FROM B_MEMBER"
+					+ "		WHERE MEM_NUMBER = ?";
+			List<Object> param = new ArrayList<Object>();
+			param.add(memNumber);
+			return JDBCUtil.selectOne(sql, param);
+		}
+		
+		
+	/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//마이페이지 -> 전화번호 변경
+		public int changeNumber(String changeNumber) {
+			String sql = "UPDATE B_MEMBER SET MEM_NUMBER = ? WHERE MEM_NUMBER = ?";
+			List<Object> param = new ArrayList<Object>();
+			
+			param.add(changeNumber);
+			param.add(UserService.LoginMember.get("MEM_NUMBER"));
+			
+			return JDBCUtil.update(sql, param);
+		}
+
+		
+	/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//내 한줄평 보기 -> 내가 쓴 한줄평 목록 보기
+		public List<Map<String, Object>> bringReview(String memNname){
+			String sql = "SELECT R.BUY_NO, M.MENU_NAME, R.MENU_ID, R.REVIEW_DATE, R.MEM_NNAME, R.REVIEW_COMMENT, R.REVIEW_STAR FROM B_REVIEW R , B_MENU M WHERE R.MENU_ID = M.MENU_ID AND MEM_NNAME = ?";
+			List<Object> param = new ArrayList<Object>();
+			param.add(memNname);
+			return JDBCUtil.selectList(sql, param);
+		}
+		
+		
+	/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//내 예약 현황 -> 내가 한 예약들 목록
+	     public List<Map<String, Object>> myReservInfo(){
+	         String sql = "SELECT to_char(BUY_DATE, 'YYMMDD') as BUY_DATE, BUY_NO, BUY_TP, MEM_ID FROM B_BUY WHERE MEM_ID = ?";
+	         
+	         List<Object> param = new ArrayList<Object>();
+	         param.add(UserService.LoginMember.get("MEM_ID"));
+	         return JDBCUtil.selectList(sql, param);
+	      }
+
+	     
+	/////////////////////////////////////////////////////////////////////////////////
+	     
+	     
+	     public int cancleReserv() {
+			String sql = "UPDATE B_BUY SET BUY_APRV = '거절' WHERE BUY_APRV LIKE '승인' AND MEM_ID = ?";
+			List<Object> param = new ArrayList<Object>();
+				
+			param.add(UserService.LoginMember.get("MEM_ID"));
+			return JDBCUtil.update(sql, param);
+		}	
+
+}
