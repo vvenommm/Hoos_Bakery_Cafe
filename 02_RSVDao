@@ -28,8 +28,8 @@ private RSVDao() {
 	//[4.예약 바구니] 선택 시 예약 바구니의 홈.
 	//예약 바구니에 있는 상품 출력
 	public List<Map<String, Object>> rsvCart() {
-		String sql = "SELECT C.CART_NO, M.MENU_NAME MENU_NAME, C.CART_QTY CART_QTY, CART_PRICE FROM B_CART C, B_MENU M WHERE C.MENU_ID = M.MENU_ID UNION ALL" + 
-				" SELECT MAX(C.CART_NO)+1, '총합', SUM(C.CART_QTY), SUM(CART_PRICE) MENU_AMT FROM B_CART C, B_MENU M WHERE C.MENU_ID = M.MENU_ID ORDER BY CART_NO";
+		String sql = "SELECT M.MENU_NAME MENU_NAME, C.CART_QTY CART_QTY, CART_PRICE FROM B_CART C, B_MENU M WHERE C.MENU_ID = M.MENU_ID AND C.CART_STATE = '미결' UNION ALL" + 
+				" SELECT '총합', SUM(C.CART_QTY), SUM(CART_PRICE) MENU_AMT FROM B_CART C, B_MENU M WHERE C.MENU_ID = M.MENU_ID AND C.CART_STATE = '미결' ORDER BY CART_NO";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -43,6 +43,8 @@ private RSVDao() {
 		
 		return JDBCUtil.selectOne(sql);
 	}
+	
+	
 /////////////////////////////////////////////////////////////////////////////////
 	
 	
@@ -79,12 +81,13 @@ private RSVDao() {
 	
 	
 	//[4.예약 바구니] ->[2.수량 수정하기]
-	public int editPch(int cartQty, int cartNo) {
-		String sql = "UPDATE B_CART SET CART_QTY = ? WHERE CART_NO = ?";
+	public int editPch(int cartQty, int cartNo, String menuId) {
+		String sql = "UPDATE B_CART SET CART_QTY = ? WHERE CART_NO = ? AND MENU_ID = ?";
 		List<Object> param = new ArrayList<Object>();
 		
 		param.add(cartQty);
 		param.add(cartNo);
+		param.add(menuId);
 		
 		return JDBCUtil.update(sql, param);
 	}
