@@ -31,6 +31,8 @@ public class RSVService {
 	private static RSVDao rsvDao = RSVDao.getInstance();
 	private static UserService userService = UserService.getInstance();
 	List<Map<String, Object>> rsvMenuList = rsvDao.rsvCart();
+	int paidNo = 0;
+	String paidID = "";
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +124,7 @@ public class RSVService {
 		int totalPrice = (int) svRow.get("CART_PRICE");
 		String memId = (String) userService.LoginMember.get("MEM_ID");
 		int myMile = (int) userService.LoginMember.get("MEM_MILEAGE");
+		paidID = memId;
 		
 		System.out.println("예약 주문을 완료 하시겠습니까?\n[1.네 2.아니오]");
 		int input = ScanUtil.nextInt();
@@ -174,6 +177,7 @@ public class RSVService {
 				
 				Map<String, Object> menuInCart = rsvDao.getCartNo();
 				int cartNo = (int)menuInCart.get("CART_NO");
+				paidNo = cartNo;
 				
 				int result = rsvDao.rsvToBuy(cartNo, memId, myMile, mUsed, mWill, totalPrice, pickup, etc);
 
@@ -202,7 +206,15 @@ public class RSVService {
 	
 	//결제 완료 후 구매 내역 보여주는 영수증 화면
 	public int reciept() {
-		// TODO Auto-generated method stub
+		List<Map<String, Object>> list = rsvDao.reciept(paidNo, paidID);
+		
+		System.out.println();
+		
+		for(Map<String, Object> row : list) {
+			System.out.println(row.get("));
+		}
+		
+		
 		return 0;
 	}
 	
