@@ -1,0 +1,389 @@
+package service;
+
+import java.util.List;
+import java.util.Map;
+
+import dao.MenuDao;
+import util.ScanUtil;
+import util.View;
+
+public class MenuService {
+	
+	private MenuService() {
+		
+	}
+	private static MenuService instance;
+	public static MenuService getInstance() {
+		if(instance == null) {
+			instance = new MenuService();
+		}
+		return instance;
+	}
+	
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	private static MenuDao breadDao = MenuDao.getInstance();
+	private static MenuDao cookieDao = MenuDao.getInstance();
+	private static MenuDao cakeDao = MenuDao.getInstance();
+	private static MenuDao drinkDao = MenuDao.getInstance();
+	private static MenuDao menuDao = MenuDao.getInstance();
+	private static UserService userService = UserService.getInstance();
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//메뉴 홈
+	public int menu() {
+		System.out.println("==================");
+		System.out.println("1.빵\n\n2.쿠키류\n\n3.케이크\n\n4.음료\n\n0.뒤로가기\n");
+		System.out.println("==================");
+		System.out.print("메뉴를 고르세요:");
+		int input = ScanUtil.nextInt();
+		switch(input) {
+		case 1:
+			return View.MENU_BREAD;
+		case 2:
+			return View.MENU_COOKIE;
+		case 3:
+			return View.MENU_CAKE;
+		case 4:
+			return View.MENU_DRINK;
+		case 0:
+			try {
+				if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+					return View.ADMIN_HOME;
+				}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+					return View.MEM_HOME;
+				}else { //비회원 홈
+					return View.HOME;
+				}
+			} catch(NullPointerException e) {
+			}
+		}
+	return View.MENU;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//빵 목록
+	public int breadList() {
+		List<Map<String, Object>> bread = breadDao.breadList();
+		System.out.println("==================================");
+		for(Map<String, Object> b: bread) {
+			System.out.println(b.get("TO_NUMBER(SUBSTR(MENU_ID,2))") + "." + b.get("MENU_NAME") + "(" + b.get("MENU_PRICE") + "원)");
+		}
+		System.out.println("==================================");
+		return View.MENU_BREAD_DETAIL;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//빵 상세화면
+	public int breadDetail() {
+		System.out.print("번호 입력:");
+		int menuNum = ScanUtil.nextInt();
+		Map<String, Object> breadDetail = breadDao.breadDetail(menuNum);
+		System.out.print(breadDetail.get("MENU_DETAIL"));
+		System.out.println();
+		
+		System.out.println("[1.구매하기 9.뒤로가기 0.홈으로]");
+		int input = ScanUtil.nextInt();
+		
+		switch(input) {
+		case 1:
+			 if(!userService.LoginMember.get("MEM_ID").equals(null)) {
+				 Map<String, Object> getCartNo = menuDao.getCartNo();
+				 int cartNo = (int)getCartNo.get("CART_NO")+1;
+				 
+				 String menuId = (String)breadDetail.get("MENU_ID");
+				 System.out.println(breadDetail);
+				 
+				 System.out.println("수량을 입력해주세요.");
+				 int qty = ScanUtil.nextInt();
+				 String memId = (String)userService.LoginMember.get("MEM_ID");
+				 int result = menuDao.intoCart(cartNo, menuId, qty, memId);
+				 if(result == 1) {
+					 System.out.println("예약 바구니에 담겼어요!\n[1.다시 메뉴 고르기 2.예약 바구니로 이동하기 3.홈으로]");
+					 input = ScanUtil.nextInt();
+					 
+					 switch(input) {
+					 case 1:
+						 return View.MENU;
+					 case 2:
+						 return View.RSV_HOME;
+					 case 3:
+						 return View.MEM_HOME;
+					 }
+					 }else if(result == 0) {
+						 System.out.println("다시 시도해주세요.");
+						 breadDetail();
+					 }
+			 }else {
+				 System.out.println("로그인 후 이용 가능합니다.");
+				 return View.LOGIN;
+			 }
+		case 9:
+			 return View.MENU_BREAD;
+		case 0:
+			try {
+				if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+					return View.ADMIN_HOME;
+				}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+					return View.MEM_HOME;
+				}else { //비회원 홈
+					return View.HOME;
+				}
+			} catch(NullPointerException e) {
+			}
+		}
+		return View.HOME;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+		
+	
+	//쿠키 목록
+	public int cookieList() {
+		List<Map<String, Object>> cookie = cookieDao.cookieList();
+		System.out.println("==================================");
+		for(Map<String, Object> c: cookie) {
+			System.out.println(c.get("MENU_NAME") +"(" + c.get("MENU_PRICE") + "원)" );
+		}
+		System.out.println("==================================");
+		return View.MENU_COOKIE_DETAIL;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+	
+	//쿠키 상세화면
+	public int cookieDetail() {
+		System.out.print("메뉴 번호를 입력해주세요.\n->");
+		int menuNum = ScanUtil.nextInt();
+		Map<String, Object> cookieDetail = cookieDao.cookieDetail(menuNum);
+		System.out.print(cookieDetail.get("MENU_DETAIL"));
+		System.out.println();
+		
+		System.out.println("[1.구매하기 9.뒤로가기 0.홈으로]");
+		int input = ScanUtil.nextInt();
+		
+		switch(input) {
+		case 1:
+			 if(!userService.LoginMember.get("MEM_ID").equals(null)) {
+				 Map<String, Object> getCartNo = menuDao.getCartNo();
+				 int cartNo = (int)getCartNo.get("CART_NO")+1;
+				 
+				 String menuId = (String)cookieDetail.get("MENU_ID");
+				 System.out.println("수량을 입력해주세요.");
+				 int qty = ScanUtil.nextInt();
+				 String memId = (String)userService.LoginMember.get("MEM_ID");
+				 int result = menuDao.intoCart(cartNo, menuId, qty, memId);
+				 if(result == 1) {
+					 System.out.println("예약 바구니에 담겼어요!\n[1.다시 메뉴 고르기 2.예약 바구니로 이동하기 3.홈으로]");
+					 input = ScanUtil.nextInt();
+					 
+					 switch(input) {
+					 case 1:
+						 return View.MENU;
+					 case 2:
+						 return View.RSV_HOME;
+					 case 3:
+						 return View.MEM_HOME;
+					 }
+					 }else if(result == 0) {
+						 System.out.println("다시 시도해주세요.");
+						 breadDetail();
+					 }
+			 }else {
+				 System.out.println("로그인 후 이용 가능합니다.");
+				 return View.LOGIN;
+			 }
+		case 9:
+			 return View.MENU_COOKIE;
+		case 0:
+			try {
+				if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+					return View.ADMIN_HOME;
+				}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+					return View.MEM_HOME;
+				}else { //비회원 홈
+					return View.HOME;
+				}
+			} catch(NullPointerException e) {
+			}
+		}
+		return View.MENU_COOKIE;
+	}
+	
+
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//케이크 목록
+	public int cakeList() {
+		List<Map<String, Object>> cake = cakeDao.cakeList();
+		
+		System.out.println("==================================");
+		for(Map<String, Object> c: cake) {
+			System.out.println(c.get("MENU_NAME") +"(" + c.get("MENU_PRICE") + "원)");
+		}
+		System.out.println("==================================");
+		
+		return View.MENU_CAKE_DETAIL;
+	}
+
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+	
+	//케이크 상세화면
+	public int cakeDetail() {
+		System.out.print("메뉴 번호를 입력해주세요.\n->");
+		int menuNum = ScanUtil.nextInt();
+		Map<String, Object> cakeDetail = cakeDao.cakeDetail(menuNum);
+		System.out.print(cakeDetail.get("MENU_DETAIL"));
+		System.out.println();
+		
+		System.out.println("[1 구매하기 9.뒤로가기 0.홈으로]");
+		int input = ScanUtil.nextInt();
+		
+		switch(input) {
+		case 1:
+			 if(!userService.LoginMember.get("MEM_ID").equals(null)) {
+				 Map<String, Object> getCartNo = menuDao.getCartNo();
+				 int cartNo = (int)getCartNo.get("CART_NO")+1;
+				 
+				 String menuId = (String)cakeDetail.get("MENU_ID");
+				 System.out.println("수량을 입력해주세요.");
+				 int qty = ScanUtil.nextInt();
+				 String memId = (String)userService.LoginMember.get("MEM_ID");
+				 int result = menuDao.intoCart(cartNo, menuId, qty, memId);
+				 if(result == 1) {
+					 System.out.println("예약 바구니에 담겼어요!\n[1.다시 메뉴 고르기 2.예약 바구니로 이동하기 3.홈으로]");
+					 input = ScanUtil.nextInt();
+					 
+					 switch(input) {
+					 case 1:
+						 return View.MENU;
+					 case 2:
+						 return View.RSV_HOME;
+					 case 3:
+						 return View.MEM_HOME;
+					 }
+					 }else if(result == 0) {
+						 System.out.println("다시 시도해주세요.");
+						 breadDetail();
+					 }
+			 }else {
+				 System.out.println("로그인 후 이용 가능합니다.");
+				 return View.LOGIN;
+			 }
+		case 9:
+			 return View.MENU_CAKE;
+		case 0:
+			try {
+				if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+					return View.ADMIN_HOME;
+				}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+					return View.MEM_HOME;
+				}else { //비회원 홈
+					return View.HOME;
+				}
+			} catch(NullPointerException e) {
+			}
+		}
+		return View.MENU_CAKE;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//음료 목록
+	public int drinkList() {
+		List<Map<String, Object>> drink = cakeDao.drinkList();
+		System.out.println("==================================");
+		for(Map<String, Object> d: drink) {
+			System.out.println(d.get("MENU_NAME") +"(" + d.get("MENU_PRICE") + "원)");
+		}
+		System.out.println("==================================");
+		return View.MENU_DRINK_DETAIL;
+	}
+
+	
+/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	//음료 상세화면
+	public int drinkDetail() {
+		System.out.print("메뉴 번호를 입력해주세요.\n->");
+		int menuNum = ScanUtil.nextInt();
+		Map<String, Object> drinkDetail = drinkDao.drinkDetail(menuNum);
+		System.out.print(drinkDetail.get("MENU_DETAIL"));
+		System.out.println();
+		
+		System.out.println("[1.구매하기 9.뒤로가기 0.홈으로]");
+		int input = ScanUtil.nextInt();
+		
+		switch(input) {
+		case 1:
+			 if(!userService.LoginMember.get("MEM_ID").equals(null)) {
+				 Map<String, Object> getCartNo = menuDao.getCartNo();
+				 int cartNo = (int)getCartNo.get("CART_NO")+1;
+				 
+				 String menuId = (String)drinkDetail.get("MENU_ID");
+				 System.out.println("수량을 입력해주세요.");
+				 int qty = ScanUtil.nextInt();
+				 String memId = (String)userService.LoginMember.get("MEM_ID");
+				 int result = menuDao.intoCart(cartNo, menuId, qty, memId);
+				 if(result == 1) {
+					 System.out.println("예약 바구니에 담겼어요!\n[1.다시 메뉴 고르기 2.예약 바구니로 이동하기 3.홈으로]");
+					 input = ScanUtil.nextInt();
+					 
+					 switch(input) {
+					 case 1:
+						 return View.MENU;
+					 case 2:
+						 return View.RSV_HOME;
+					 case 3:
+						 return View.MEM_HOME;
+					 }
+					 }else if(result == 0) {
+						 System.out.println("다시 시도해주세요.");
+						 breadDetail();
+					 }
+			 }else {
+				 System.out.println("로그인 후 이용 가능합니다.");
+				 return View.LOGIN;
+			 }
+		case 9:
+			 return View.MENU_DRINK;
+		case 0:
+			try {
+				if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+					return View.ADMIN_HOME;
+				}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+					return View.MEM_HOME;
+				}else { //비회원 홈
+					return View.HOME;
+				}
+			} catch(NullPointerException e) {
+			}
+		}
+		return View.MENU_DRINK;
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+}
+
