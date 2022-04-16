@@ -55,22 +55,10 @@ public class MypageDao {
 
 		
 	/////////////////////////////////////////////////////////////////////////////////
-		
-		
-		//내 한줄평 보기 -> 내가 쓴 한줄평 목록 보기
-		public List<Map<String, Object>> bringReview(String memNname){
-			String sql = "SELECT R.BUY_NO, M.MENU_NAME, R.MENU_ID, R.REVIEW_DATE, R.MEM_NNAME, R.REVIEW_COMMENT, R.REVIEW_STAR FROM B_REVIEW R , B_MENU M WHERE R.MENU_ID = M.MENU_ID AND MEM_NNAME = ?";
-			List<Object> param = new ArrayList<Object>();
-			param.add(memNname);
-			return JDBCUtil.selectList(sql, param);
-		}
-		
-		
-	/////////////////////////////////////////////////////////////////////////////////
-		
+			
 		
 		//내 예약 현황 -> 내가 한 예약들 목록
-	     public List<Map<String, Object>> myReservInfo(){
+	     public List<Map<String, Object>> myReserv(){
 	         String sql = "SELECT to_char(BUY_DATE, 'YYMMDD') as BUY_DATE, BUY_NO, BUY_TP, MEM_ID FROM B_BUY WHERE MEM_ID = ?";
 	         
 	         List<Object> param = new ArrayList<Object>();
@@ -80,6 +68,18 @@ public class MypageDao {
 
 	     
 	/////////////////////////////////////////////////////////////////////////////////
+	 	
+			
+			//내 한줄평 보기 -> 내가 쓴 한줄평 목록 보기
+			public List<Map<String, Object>> bringReview(String memNname){
+				String sql = "SELECT R.BUY_NO, M.MENU_NAME, R.MENU_ID, R.REVIEW_DATE, R.MEM_NNAME, R.REVIEW_COMMENT, R.REVIEW_STAR FROM B_REVIEW R , B_MENU M WHERE R.MENU_ID = M.MENU_ID AND MEM_NNAME = ?";
+				List<Object> param = new ArrayList<Object>();
+				param.add(memNname);
+				return JDBCUtil.selectList(sql, param);
+			}
+			
+			
+		/////////////////////////////////////////////////////////////////////////////////
 	     
 	     
 	     public int cancleReserv() {
