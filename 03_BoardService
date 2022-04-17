@@ -149,7 +149,6 @@ public class BoardService {
 		int num = eventList.size();
 		for(Map<String, Object> board : eventList) {
 			System.out.print(num + "\t");
-			System.out.print(board.get("BOARD_NO") + "\t");
 			System.out.print(board.get("BOARD_TITLE") + "\t");
 			System.out.print(board.get("MEM_NNAME") + "\t");
 			System.out.println(board.get("BOARD_DATE"));
@@ -262,10 +261,10 @@ public class BoardService {
 		
 		System.out.println("조회하려는 글 번호를 입력해주세요. : ");
 		int noticeNo = ScanUtil.nextInt();
-		Map<String, Object> board = noticeList.get(noticeNo-1);
+		Map<String, Object> board = noticeList.get(noticeList.size()-noticeNo);
 		
 		System.out.println("┌─────────────────────┐");
-		System.out.println("글번호 : " + board.get("BOARD_NO"));
+		System.out.println("글번호 : " + (noticeList.size()-noticeNo));
 		System.out.println(board.get("BOARD_TITLE"));
 		System.out.println(" ──────────────────────");
 		System.out.print("작성자 : " + board.get("MEM_NNAME") + "\t작성일 : " + board.get("BOARD_DATE") + "\n\n");
@@ -339,11 +338,11 @@ public class BoardService {
 		
 		System.out.println("조회하려는 글 번호를 입력해주세요. : ");
 		int eventNo = ScanUtil.nextInt();
-		Map<String, Object> board = eventList.get(eventNo-1);
+		Map<String, Object> board = eventList.get(eventList.size()-eventNo);
 		
 		
 		System.out.println("┌─────────────────────┐");
-		System.out.println("글번호 : " + board.get("BOARD_NO"));
+		System.out.println("글번호 : " + (eventList.size()-eventNo));
 		System.out.println(board.get("BOARD_TITLE"));
 		System.out.println(" ──────────────────────");
 		System.out.print("작성자 : " + board.get("MEM_NNAME") + "\t작성일 : " + board.get("BOARD_DATE") + "\n\n");
