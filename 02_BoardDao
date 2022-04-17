@@ -24,11 +24,13 @@ public class BoardDao {
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 	
 	
 	//모든 글 출력
 	public List<Map<String, Object>> allBoardList(){
-		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD";
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin') MEM_NNAME, TO_CHAR(BOARD_DATE, 'YY/MM/DD') BOARD_DATE FROM B_BOARD ORDER BY BOARD_NO DESC";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -38,7 +40,7 @@ public class BoardDao {
 	
 	//공지사항 출력
 	public List<Map<String, Object>> noticeList(){
-		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 1";
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin') MEM_NNAME, TO_CHAR(BOARD_DATE, 'YY/MM/DD') BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 1 ORDER BY BOARD_NO DESC";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -48,7 +50,7 @@ public class BoardDao {
 	
 	//이벤트 출력
 	public List<Map<String, Object>> eventList(){
-		String sql = "SELECT BOARD_NO, BOARD_TITLE, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 2";
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin') MEM_NNAME, TO_CHAR(BOARD_DATE, 'YY/MM/DD') BOARD_DATE FROM B_BOARD WHERE BOARD_CODE = 2 ORDER BY BOARD_NO DESC";
 		return JDBCUtil.selectList(sql);
 	}
 	
@@ -58,7 +60,7 @@ public class BoardDao {
 	
 	//글읽기
 	public Map<String, Object> readPost(int boardNo){
-		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_NO = ?";
+		String sql = "SELECT BOARD_NO, BOARD_TITLE, BOARD_CONTENT, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin') MEM_NNAME, BOARD_DATE FROM B_BOARD WHERE BOARD_NO = ?";
 		List<Object> param = new ArrayList<Object>();
 
 		param.add(boardNo);
@@ -104,7 +106,7 @@ public class BoardDao {
 		
 		//글 작성
 		public int insertPost(List<Object> input) {
-			String sql = "INSERT INTO B_BOARD(BOARD_NO, BOARD_CODE, BOARD_TITLE, BOARD_CONTENT, BOARD_NN, BOARD_DATE) VALUES( (SELECT MAX(NVL(BOARD_NO, 0))+1, ?, ?, ?, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin'), SYSDATE)";
+			String sql = "INSERT INTO B_BOARD(BOARD_NO, BOARD_CODE, BOARD_TITLE, BOARD_CONTENT, MEM_ID, BOARD_DATE) VALUES((SELECT MAX(NVL(BOARD_NO, 0))+1 FROM B_BOARD), ?, ?, ?, 'admin', SYSDATE)";
 			
 			return JDBCUtil.update(sql, input);
 		}	
