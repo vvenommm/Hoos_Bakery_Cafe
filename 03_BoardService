@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import dao.BoardDao;
+import util.PrintBlankUtil;
 import util.ScanUtil;
 import util.View;
 
@@ -37,16 +38,17 @@ public class BoardService {
 	public int boardList() {
 		List<Map<String, Object>> boardList = boardDao.allBoardList();
 		
-		System.out.println("┌─────────────────────┐");
-		System.out.println("\t번호\t제목\t작성자\t작성일");
-		System.out.println(" ──────────────────────");
+		String title = " 글번호\t\t\t제목\t\t\t작성자\t작성일";
+		System.out.println("\t┌───────────────────────────────────────────────────────────────────────────────┐");
+		System.out.println("\t│" + PrintBlankUtil.printBlank(title, 40) + "│");
+		System.out.println("\t├───────────────────────────────────────────────────────────────────────────────┤");
+		
 		for(Map<String, Object> board : boardList) {
-			System.out.print(board.get("BOARD_NO") + "\t");
-			System.out.print(board.get("BOARD_TITLE") + "\t");
-			System.out.print(board.get("MEM_NNAME") + "\t");
-			System.out.println(board.get("BOARD_DATE"));
+			String str = board.get("BOARD_NO") + "\t" + board.get("BOARD_TITLE") + "\t" + board.get("MEM_NNAME") + "\t" + board.get("BOARD_DATE");
+			System.out.print("\t│  " + PrintBlankUtil.printBlank(str, 50) + " │\n");
+			System.out.print("\t│ - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - │\n");
 		}
-		System.out.println("└─────────────────────┘");
+		System.out.println("\t└─────────────────────────────────────────────────────────────┘");
 		if(userService.LoginMember.size() > 0) {
 			if(userService.LoginMember.get("MEM_ID").equals("admin")) {
 				System.out.println("\n\n\n[1.조회 2.공지사항만 보기 3.이벤트만 보기 4.글쓰기 0.홈으로]");
