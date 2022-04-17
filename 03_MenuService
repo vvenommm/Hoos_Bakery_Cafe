@@ -53,16 +53,14 @@ public class MenuService {
 		case 4:
 			return View.MENU_DRINK;
 		case 0:
-			try {
+			if(userService.LoginMember.size() > 0) {
 				if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
 					return View.ADMIN_HOME;
-				}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+				}else{ //회원 홈
 					return View.MEM_HOME;
-				}else { //비회원 홈
+				}}else { //비회원 홈
 					return View.HOME;
 				}
-			} catch(NullPointerException e) {
-			}
 		}
 	return View.MENU;
 	}
@@ -104,7 +102,6 @@ public class MenuService {
 				 int cartNo = (int)getCartNo.get("CART_NO")+1;
 				 
 				 String menuId = (String)breadDetail.get("MENU_ID");
-				 System.out.println(breadDetail);
 				 
 				 System.out.println("수량을 입력해주세요.");
 				 int qty = ScanUtil.nextInt();
