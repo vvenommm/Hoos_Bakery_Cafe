@@ -1,220 +1,93 @@
-package service;
+package dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-import dao.MypageDao;
-import util.ScanUtil;
-import util.View;
+import service.UserService;
+import util.JDBCUtil;
 
-public class MypageService {
+public class MypageDao {
 	
-private MypageService() {
-		
-	}
-	private static MypageService instance;
-	public static MypageService getInstance() { 
-		if(instance == null) {
-			instance = new MypageService();
-		}  
-		return instance;
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-
-	private static UserService userService = UserService.getInstance();	
-	private static MypageDao mypageDao = MypageDao.getInstance();	
-	
-/////////////////////////////////////////////////////////////////////////////////
-	
-	
-	//[1.마이페이지] 홈
-	public int myPage() {
-		//가용 적립금이 ㅇㅇ점 있습니다. / 예약 주문이 n건 있습니다.
-		System.out.println("[1.내정보 보기 2.내 예약 현황 3.내가 쓴 한줄평 0.홈으로]");
-		System.out.print("선택하기: ");
-		int input = ScanUtil.nextInt();
-		switch(input) {
-			case 1: 
-				return View.MYPAGE_INFO; //1. 내 정보 보기
-			case 2:
-				return View.MYPAGE_RESERVATION; //2. 내 예약 현황
-			case 3:
-				return View.MYPAGE_REVIEW; //3. 내가 쓴 한줄평
-			case 0:
-				if(userService.LoginMember.size() > 0) {
-					if (userService.LoginMember.get("MEM_ID").equals("admin")) { // 관리자 홈
-						return View.ADMIN_HOME;
-					} else { // 회원 홈
-						return View.MEM_HOME;
-					}} else { // 비회원 홈
-						return View.HOME;
-				}
+	//싱글톤 패턴
+		public MypageDao() {
+				
 		}
-		return View.HOME;
-	}
-
-	
-/////////////////////////////////////////////////////////////////////////////////
-	
-	
-	//[1.마이페이지] -> [1.내정보 보기]
-	public int myPageInfo() {
-		System.out.println("비밀번호를 다시 입력해주세요.\n비밀번호 : ");
-		String password = ScanUtil.nextLine();
-		
-		if (userService.LoginMember.get("MEM_PW").equals(password)) {
-			System.out.println("===================");
-			System.out.println("ID: " + userService.LoginMember.get("MEM_ID"));
-			System.out.println("이름: " + userService.LoginMember.get("MEM_NAME"));
-			System.out.println("닉네임: " + userService.LoginMember.get("MEM_NNAME"));
-			System.out.println("연락처: " + userService.LoginMember.get("MEM_NUMBER"));
-			System.out.println("적립금: " + userService.LoginMember.get("MEM_MILEAGE") + "원");
-			System.out.println("===================");
-			System.out.println(" [1.연락처 수정 0.뒤로가기] ");
-			System.out.print("선택하기: ");
-			int num = ScanUtil.nextInt();
-			switch (num) {
-			case 1:
-				Object memNumber = userService.LoginMember.get("MEM_NUMBER");
-				System.out.println("새로운 연락처를 입력해주세요: ");
-				String changeNumber = ScanUtil.nextLine();
-				String regex = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})(\\d{4})$"; // 핸드폰 번호만 받을 수 있게 설정 010, 016~019 앞자리 만 가능하고
-																			// 중간번호는 3~4자리 끝번호는 4자리만 가능
-				boolean check = Pattern.matches(regex, changeNumber); // 정규식을 만족하였을 경우 true값을 받음
-				Map<String, Object> Number = mypageDao.bringNumber(changeNumber);
-				String cp = null; // 중복된 전화번호를 String으로 저장할 변수
-				String phsv = null;
-				try {
-					cp = (String) Number.get("MEM_NUMBER"); // map을 string으로 변환 하여 저장
-				} catch (NullPointerException e) { // map에는 null값이 있으면 오류가 뜨기에 예외처리
-				}
-				if (cp == null && check) { // 첫번째로 등록한 회원은 비교할 번호가 없기에 정규식만 통과하면 저장하게 만듦
-					phsv = changeNumber;
-					int chnm = mypageDao.changeNumber(changeNumber);
-					System.out.println("변경된 연락처는 재 로그인 후 반영됩니다.");
-					break;
-				} else { // 첫번째 다음으로 등록한 회원들은 번호를 비교
-					boolean check2 = changeNumber.equals(cp); // 중복되는 번호가 있으면 값이 true로 바뀜
-					if (check && check2 == false) { // 중복되지 않고 정규식을 통과하게 된다면 번호를 저장
-						phsv = changeNumber;
-						int chnm = mypageDao.changeNumber(changeNumber);
-						break;
-					} else { // 중복되거나 정규식을 만족하지 못하면 출력
-						System.out.println("중복되거나 형식이 잘못된 전화번호 입니다.");
-					}
-				}
-		case 0:
-			return View.MYPAGE;
-		}
-		}else {
-			System.out.println("비밀번호를 다시 입력하세요.");
-		}
-		return View.MEM_HOME;
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-
-	
-	//[1.마이페이지] -> [2.예약 현황]
-	public int myReserv() {
-        System.out.println("\t      <예약 현황>");
-        System.out.println();
-        System.out.println("번호\t예약날짜\t예약번호\t\t총 금액\t예약자");
-        System.out.println("---------------------------------------------------------");
-        List<Map<String, Object>> list = mypageDao.myReserv();
-           for(int i =1; i < list.size()+1 ; i++) {
-           for (Map<String, Object> info : list) {
-        	  System.out.print(i + "\t");
-              System.out.print(info.get("RC_DATE") + "\t");
-              System.out.print(info.get("RC_NO") + "\t");
-              System.out.print(info.get("RC_TP") + "\t");
-              System.out.println(info.get("MEM_ID") + "\t");
-           }
-	}
-           System.out.println("---------------------------------------------------------");
-           System.out.println("[1.조회 0.뒤로가기]");
-           int result = ScanUtil.nextInt();
-           switch (result) {
-           case 1 :
-        	   System.out.print("조회할 번호를 선택해 주세요. : ");
-        	   int input = ScanUtil.nextInt();
-        	 Map<String, Object>map = list.get(input -1);
-        	     System.out.println("---------------------------------------------------------");
-        		 System.out.print(map.get("RC_DATE") + "\t");
-                 System.out.print(map.get("RC_NO") + "\t");
-                 System.out.print(map.get("RC_TP") + "\t");
-                 System.out.println(map.get("MEM_ID") + "\t");
-                 System.out.println("---------------------------------------------------------");
-        	     System.out.println("삭제하시겠습니까? ");
-        	     System.out.print("[1.네 2.아니오]");
-        	     int sel = ScanUtil.nextInt();
-        	     if(sel == 1) {
-        	    	 mypageDao.cancleReserv();
-        	    	 System.out.println("삭제 하였습니다.");
-        	    	 return View.MYPAGE_RESERVATION;
-        	     }else if(sel ==2) {
-        	    	 System.out.println("예약 매뉴로 돌아갑니다.");
-        	    	 return View.MYPAGE_RESERVATION;
-        	     }else {
-        	    	 System.out.println("잘못입력했습니다. 예약 메뉴로 돌아갑니다.");
-        	    	 return View.MYPAGE_RESERVATION;
-        	     }
-           case 0 : 
-        	   return View.MYPAGE;
-        	default : 
-        		System.out.println("잘못입력하였습니다. 다시입력해 주세요.");
-        		return View.MYPAGE;
-           }
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
-
-	
-	//[1.마이페이지] -> [3.내가 쓴 한줄평]
-	public int myReview() {
-		
-		String memNname = (String)userService.LoginMember.get("MEM_NNAME");
-		List<Map<String, Object>> myReview = mypageDao.bringReview(memNname);
-		for(Map<String, Object> r : myReview) {
-			System.out.println("주문번호: " + r.get("RC_NO") + "\t");
-			System.out.println("리뷰작성일: " + r.get("REVIEW_DATE") + "\t");
-			System.out.println("제품명: " + r.get("MENU_NAME") +"\t");
-			System.out.println("내용: " + r.get("REVIEW_COMMENT") + "\t");
-			for(int i = 0; i < (int) r.get("REVIEW_STAR"); i++) {
-				System.out.print("★");
-				for(int j = 0; j < 4-i; j++) {
-				System.out.print("☆");
-				}
+		public static MypageDao instance; 
+		public static MypageDao getInstance() { 
+			if(instance == null) {
+				instance = new MypageDao();
 			}
-			System.out.println();
+			return instance;
 		}
-		System.out.println("1.돌아가기 0.홈으로");
-		int input = ScanUtil.nextInt();
-		switch(input) {
-		case 1:
-			return View.MYPAGE;
-		case 0:
-			if(userService.LoginMember.size() > 0) {
-			if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
-				return View.ADMIN_HOME;
-			}else{ //회원 홈
-				return View.MEM_HOME;
-			}}else { //비회원 홈
-				return View.HOME;
-			}
-		}
-		return View.MYPAGE;
 		
-	}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////
+		
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//[1.마이페이지] -> [1.내정보 보기]
+		//전화번호 중복 확인 매서드
+		public Map<String, Object> bringNumber(String memNumber){
+			String sql ="SELECT MEM_NUMBER"
+					+ "		FROM B_MEMBER"
+					+ "		WHERE MEM_NUMBER = ?";
+			List<Object> param = new ArrayList<Object>();
+			param.add(memNumber);
+			return JDBCUtil.selectOne(sql, param);
+		}
+		
+		
+	/////////////////////////////////////////////////////////////////////////////////
+		
+		
+		//마이페이지 -> 전화번호 변경
+		public int changeNumber(String changeNumber) {
+			String sql = "UPDATE B_MEMBER SET MEM_NUMBER = ? WHERE MEM_NUMBER = ?";
+			List<Object> param = new ArrayList<Object>();
+			
+			param.add(changeNumber);
+			param.add(UserService.LoginMember.get("MEM_NUMBER"));
+			
+			return JDBCUtil.update(sql, param);
+		}
+
+		
+	/////////////////////////////////////////////////////////////////////////////////
+			
+		
+		//내 예약 현황 -> 내가 한 예약들 목록
+	     public List<Map<String, Object>> myReserv(){
+	         String sql = "SELECT SUBSTR(BUY_NO, 1,2)||'/'||SUBSTR(BUY_NO, 3,2) BUY_DATE, BUY_NO, BUY_TP, MEM_ID FROM B_BUY WHERE MEM_ID = ?";
+	         
+	         List<Object> param = new ArrayList<Object>();
+	         param.add(UserService.LoginMember.get("MEM_ID"));
+	         return JDBCUtil.selectList(sql, param);
+	      }
+
+	     
+	/////////////////////////////////////////////////////////////////////////////////
+	 	
+			
+			//내 한줄평 보기 -> 내가 쓴 한줄평 목록 보기
+			public List<Map<String, Object>> bringReview(String memId){
+				String sql = "SELECT R.BUY_NO, R.MEM_ID, R.MENU_ID, R.REVIEW_DATE, R.REVIEW_COMMENT, R.REVIEW_STAR, M.MEM_NNAME, MN.MENU_NAME FROM B_REVIEW R, B_MEMBER M, B_MENU MN WHERE R.MEM_ID = M.MEM_ID AND MN.MENU_ID = R.MENU_ID AND R.MEM_ID = ?";
+				List<Object> param = new ArrayList<Object>();
+				param.add(memId);
+				return JDBCUtil.selectList(sql, param);
+			}
+			
+			
+		/////////////////////////////////////////////////////////////////////////////////
+	     
+	     
+	     public int cancleReserv() {
+			String sql = "UPDATE B_BUY SET BUY_APRV = '거절' WHERE BUY_APRV LIKE '승인' AND MEM_ID = ?";
+			List<Object> param = new ArrayList<Object>();
+				
+			param.add(UserService.LoginMember.get("MEM_ID"));
+			return JDBCUtil.update(sql, param);
+		}	
 
 }
