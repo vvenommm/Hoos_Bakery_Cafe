@@ -46,16 +46,13 @@ private MypageService() {
 			case 3:
 				return View.MYPAGE_REVIEW; //3. 내가 쓴 한줄평
 			case 0:
-				try {
+				if(userService.LoginMember.size() > 0) {
 					if (userService.LoginMember.get("MEM_ID").equals("admin")) { // 관리자 홈
 						return View.ADMIN_HOME;
-					} else if (!userService.LoginMember.get("MEM_ID").equals(null)) { // 회원 홈
+					} else { // 회원 홈
 						return View.MEM_HOME;
-					} else { // 비회원 홈
+					}} else { // 비회원 홈
 						return View.HOME;
-					}
-				} catch (NullPointerException e) {
-
 				}
 		}
 		return View.HOME;
@@ -204,11 +201,12 @@ private MypageService() {
 		case 1:
 			return View.MYPAGE;
 		case 0:
+			if(userService.LoginMember.size() > 0) {
 			if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
 				return View.ADMIN_HOME;
-			}else if(!userService.LoginMember.get("MEM_ID").equals(null)){ //회원 홈
+			}else{ //회원 홈
 				return View.MEM_HOME;
-			}else { //비회원 홈
+			}}else { //비회원 홈
 				return View.HOME;
 			}
 		}
