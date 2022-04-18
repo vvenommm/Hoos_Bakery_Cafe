@@ -55,35 +55,50 @@ public class MypageDao {
 
 		
 	/////////////////////////////////////////////////////////////////////////////////
+
+		
+	      public int changePassWord(String changePassWord) {
+	          String sql = "UPDATE B_MEMBER SET MEM_PW = ? WHERE MEM_PW = ?";
+	          List<Object> param = new ArrayList<Object>();
+	          
+	          param.add(changePassWord);
+	          param.add(UserService.LoginMember.get("MEM_PW"));
+	          
+	          return JDBCUtil.update(sql, param);
+	       }
+		
+		
+	/////////////////////////////////////////////////////////////////////////////////
 			
 		
 		//내 예약 현황 -> 내가 한 예약들 목록
-	     public List<Map<String, Object>> myReserv(){
-	         String sql = "SELECT to_char(BUY_DATE, 'YYMMDD') as BUY_DATE, BUY_NO, BUY_TP, MEM_ID FROM B_BUY WHERE MEM_ID = ?";
-	         
-	         List<Object> param = new ArrayList<Object>();
-	         param.add(UserService.LoginMember.get("MEM_ID"));
-	         return JDBCUtil.selectList(sql, param);
-	      }
+		public List<Map<String, Object>> myReserv(){
+			String sql = "SELECT SUBSTR(BUY_NO, 1,2)||'/'||SUBSTR(BUY_NO, 3,2) BUY_DATE, BUY_NO, BUY_MUSED, BUY_MWILL, BUY_TP, to_char(BUY_PICKUP, 'MM/DD') as BUY_PICKUP, BUY_ETC, BUY_APRV FROM B_BUY WHERE  MEM_ID = ?";
+            
+            List<Object> param = new ArrayList<Object>();
+            param.add(UserService.LoginMember.get("MEM_ID"));
+            return JDBCUtil.selectList(sql, param);
+         }
 
 	     
 	/////////////////////////////////////////////////////////////////////////////////
 	 	
 			
 			//내 한줄평 보기 -> 내가 쓴 한줄평 목록 보기
-			public List<Map<String, Object>> bringReview(String memNname){
-				String sql = "SELECT R.BUY_NO, M.MENU_NAME, R.MENU_ID, R.REVIEW_DATE, R.MEM_NNAME, R.REVIEW_COMMENT, R.REVIEW_STAR FROM B_REVIEW R , B_MENU M WHERE R.MENU_ID = M.MENU_ID AND MEM_NNAME = ?";
-				List<Object> param = new ArrayList<Object>();
-				param.add(memNname);
-				return JDBCUtil.selectList(sql, param);
-			}
+		public List<Map<String, Object>>bringReview(String memId){
+            String sql = "SELECT R.BUY_NO, R.MEM_ID, R.MENU_ID, TO_CHAR(R.REVIEW_DATE, 'YY-MM-DD') REVIEW_DATE , R.REVIEW_COMMENT, R.REVIEW_STAR, M.MEM_NNAME, MN.MENU_NAME FROM B_REVIEW R, B_MEMBER M, B_MENU MN WHERE R.MEM_ID = M.MEM_ID AND MN.MENU_ID = R.MENU_ID AND R.MEM_ID = ?";
+         
+            List<Object> param = new ArrayList<Object>();
+            param.add(memId);
+            return JDBCUtil.selectList(sql, param);
+         }
 			
 			
 		/////////////////////////////////////////////////////////////////////////////////
 	     
 	     
 	     public int cancleReserv() {
-			String sql = "UPDATE B_BUY SET BUY_APRV = '거절' WHERE BUY_APRV LIKE '승인' AND MEM_ID = ?";
+			String sql = "UPDATE B_BUY SET BUY_APRV = '취소' WHERE BUY_APRV LIKE '승인' AND MEM_ID = ?";
 			List<Object> param = new ArrayList<Object>();
 				
 			param.add(UserService.LoginMember.get("MEM_ID"));
