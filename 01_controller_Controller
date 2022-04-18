@@ -34,7 +34,7 @@ public class Controller {
 		int view = View.HOME;
 		
 		while(true) {
-			System.out.println("\n\n\n\t\t\t∞ 무 한 루 프 ∞ 베이커리 카페\n\n");
+			System.out.println("\n\n\n\n\n\n\t\t\t∞ 무 한 루 프 ∞ 베이커리 카페\n\n\n\n");
 			switch(view) {
 			case View.HOME: view = home(); break; //로그인 이전(비회원) 홈
 			case View.MEM_HOME: view = memHome(); break; //로그인(회원) 홈
@@ -89,7 +89,6 @@ public class Controller {
 			case View.RSV_PURCHASE: view = rsvService.rsvBuy();  break; //결제
 			case View.RSV_EDIT_PURCHASE: view = rsvService.editPch();  break; //예약 바구니 항목 수량 수정
 			case View.RSV_DEL_PURCHASE: view = rsvService.delPch();  break; //예약 바구니 항목 삭제
-			case View.RSV_RECIEPT: view = rsvService.reciept(); break; //결제 완료 후 구매 내역 영수증
 			
 /////////////////////////////////////////////////////////////////////////////////
 		
@@ -107,7 +106,6 @@ public class Controller {
 			case View.MNG_ORDER: view = mngService.mngOrder(); break; //예약주문 관리
 			case View.MNG_READ_ORDER: view = mngService.readOrder(); break; //예약주문 관리
 			case View.MNG_ORDER_APRV: view = mngService.orderAprv(); break; //예약 승인 관리
-//			case View.MNG_ORDER_DENY: view = mngService.orderDenied(); break; //거절 예약 관리
 			
 /////////////////////////////////////////////////////////////////////////////////
 		
@@ -115,12 +113,6 @@ public class Controller {
 			
 /////////////////////////////////////////////////////////////////////////////////
 		
-//			case View.MNG_BAKING: view = mngService.mngBaking(); break; //당일 생산량 관리
-			
-/////////////////////////////////////////////////////////////////////////////////
-		
-//			case View.MNG_SALES: view = mngService.mngSales(); break; //매출 관리
-
 			}
 		}
 		
@@ -130,7 +122,7 @@ public class Controller {
 
 	//관리자용 홈
 	private int adminHome() {
-		System.out.println("\n\t[1.마이페이지 2.메뉴 3.게시판 4.예약 바구니 5.관리자 페이지 9.로그아웃 0.프로그램 종료]\n\n\n");
+		System.out.println("\n\n\n\t[1.마이페이지 2.메뉴 3.게시판 4.예약 바구니 5.관리자 페이지 9.로그아웃 0.프로그램 종료]\n\n\n");
 		int input =ScanUtil.nextInt();
 		switch(input) {
 		case 1:return View.MYPAGE;
@@ -140,17 +132,17 @@ public class Controller {
 		case 5:return View.MANAGEMENT;
 		case 9:return View.LOGOUT;
 		case 0:
-			System.out.println("프로그램을 종료합니다.");
+			System.out.println("\t프로그램을 종료합니다.");
 			System.exit(0);
 		default :
-			System.out.println("없는 항목입니다.\n다시 입력해주세요.");
+			System.out.println("\t없는 항목입니다.\n\t다시 입력해주세요.");
 			return View.ADMIN_HOME;
 		}
 	}
 
 	//회원용 홈
 	private int memHome() {
-		System.out.println("\n\t[1.마이페이지 2.메뉴 3.게시판 4.예약 바구니 9.로그아웃 0.프로그램 종료]\n\n\n");
+		System.out.println("\n\n\n\t[1.마이페이지 2.메뉴 3.게시판 4.예약 바구니 9.로그아웃 0.프로그램 종료]\n\n\n");
 		int input =ScanUtil.nextInt();
 		switch(input) {
 		case 1:return View.MYPAGE;
@@ -159,17 +151,17 @@ public class Controller {
 		case 4:return View.RSV_HOME;
 		case 9:return View.LOGOUT;
 		case 0:
-			System.out.println("프로그램을 종료합니다.");
+			System.out.println("\t프로그램을 종료합니다.");
 			System.exit(0);
 		default :
-			System.out.println("없는 항목입니다.\n다시 입력해주세요.");
+			System.out.println("\t없는 항목입니다.\n다시 입력해주세요.");
 			return View.MEM_HOME;
 		}
 	}
 
 	//비회원용 홈
 	private int home() {
-		System.out.println("\n\t[1.로그인 2.메뉴 3.게시판 4.예약 바구니 9.회원가입 0.프로그램 종료]\n\n\n");
+		System.out.println("\n\n\n\t[1.로그인 2.메뉴 3.게시판 4.예약 바구니 9.회원가입 0.프로그램 종료]\n\n\n");
 		int input =ScanUtil.nextInt();
 		switch(input) {
 		case 1:return View.CHECK;
@@ -178,10 +170,10 @@ public class Controller {
 		case 4:return View.CHECK;
 		case 9:return View.JOIN_AGREE;
 		case 0:
-			System.out.println("프로그램을 종료합니다.");
+			System.out.println("\t프로그램을 종료합니다.");
 			System.exit(0);
 		default :
-			System.out.println("없는 항목입니다.\n다시 입력해주세요.");
+			System.out.println("\t없는 항목입니다.\n\t다시 입력해주세요.");
 			return View.HOME;
 		}
 	}
