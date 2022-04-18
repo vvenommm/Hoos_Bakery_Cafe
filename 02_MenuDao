@@ -51,9 +51,9 @@ public class MenuDao {
 	//빵 리뷰&별점
 	
 		public List<Map<String, Object>> breadReview(int menuNum){
-			String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR \r\n" + 
-					" FROM B_MENU M, B_REVIEW R\r\n" + 
-					" WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'a%' AND M.MENU_ID = R.MENU_ID";
+			String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR, MB.MEM_NNAME " + 
+		               " FROM B_MENU M, B_REVIEW R, B_MEMBER MB" + 
+		               " WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'a%' AND M.MENU_ID = R.MENU_ID AND MB.MEM_ID = R.MEM_ID";
 			List<Object>param = new ArrayList<Object>();
 			param.add(menuNum);
 			
@@ -91,9 +91,9 @@ public class MenuDao {
 	//쿠키 리뷰&별점
 	
 		public List<Map<String, Object>> cookieReview(int menuNum){
-			String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR " + 
-					" FROM B_MENU M, B_REVIEW R\r\n" + 
-					" WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'b%' AND M.MENU_ID = R.MENU_ID";
+			String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR, MB.MEM_NNAME " + 
+		               " FROM B_MENU M, B_REVIEW R, B_MEMBER MB" + 
+		               " WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'b%' AND M.MENU_ID = R.MENU_ID AND MB.MEM_ID = R.MEM_ID";
 			List<Object>param = new ArrayList<Object>();
 			param.add(menuNum);
 			
@@ -132,9 +132,9 @@ public class MenuDao {
 	//케이크 리뷰&별점
 	
 	public List<Map<String, Object>> cakeReview(int menuNum){
-		String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR \r\n" + 
-				" FROM B_MENU M, B_REVIEW R\r\n" + 
-				" WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'c%' AND M.MENU_ID = R.MENU_ID";
+		String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR, MB.MEM_NNAME " + 
+	               " FROM B_MENU M, B_REVIEW R, B_MEMBER MB" + 
+	               " WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'c%' AND M.MENU_ID = R.MENU_ID AND MB.MEM_ID = R.MEM_ID";
 		List<Object>param = new ArrayList<Object>();
 		param.add(menuNum);
 		
@@ -172,9 +172,9 @@ public class MenuDao {
 	//음료 리뷰&별점
 	
 	public List<Map<String, Object>> drinkReview(int menuNum){
-		String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR \r\n" + 
-				" FROM B_MENU M, B_REVIEW R\r\n" + 
-				" WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'd%' AND M.MENU_ID = R.MENU_ID";
+		String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR, MB.MEM_NNAME " + 
+	               " FROM B_MENU M, B_REVIEW R, B_MEMBER MB" + 
+	               " WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'd%' AND M.MENU_ID = R.MENU_ID AND MB.MEM_ID = R.MEM_ID";
 		List<Object>param = new ArrayList<Object>();
 		param.add(menuNum);
 		
