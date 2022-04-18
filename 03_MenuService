@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import dao.MenuDao;
+import util.PrintBlankUtil;
 import util.ScanUtil;
 import util.View;
 
@@ -34,10 +35,9 @@ public class MenuService {
 	
 	//메뉴 홈
 	public int menu() {
-		System.out.println("==================");
-		System.out.println("1.빵\n\n2.쿠키류\n\n3.케이크\n\n4.음료\n\n0.뒤로가기\n");
-		System.out.println("==================");
-		System.out.print("메뉴를 고르세요:");
+		System.out.println("\t┌─────────────────────┐");
+		System.out.println("\t│ 1.빵                │\n\n\t│ 2.쿠키류            │\n\n\t│ 3.케이크            │\n\n\t│ 4.음료              │\n\n\t│ 0.뒤로가기          │\n\t└─────────────────────┘");
+		System.out.print("\t->");
 		int input = ScanUtil.nextInt();
 		switch(input) {
 		case 1:
@@ -68,11 +68,35 @@ public class MenuService {
 	//빵 목록
 	public int breadList() {
 		List<Map<String, Object>> bread = menuDao.breadList();
-		System.out.println("==================================");
+		
+//		String num = " 글번호";
+//		String title = "제목";
+//		String writer = "작성자";
+//		String dated = "작성일";
+//		String content = "내용";
+//		
+//		System.out.println("\t┌────────────────────────────────────────────────────────────────────────────────┐");
+//		System.out.println("\t│" + PrintBlankUtil.printBlank(num, 15) + PrintBlankUtil.printBlank(title, 45) + PrintBlankUtil.printBlank(writer, 10) + PrintBlankUtil.printBlank(writer, 10) + "│");
+//		System.out.println("\t├────────────────────────────────────────────────────────────────────────────────┤");
+//		
+//		for(Map<String, Object> board : noticeList) {
+//			int number = (int)board.get("BOARD_NO");
+//			title = (String) board.get("BOARD_TITLE");
+//			writer = (String) board.get("MEM_NNAME");
+//			dated = (String) board.get("BOARD_DATE");
+//			System.out.println("\t│  " + number + "\t" + PrintBlankUtil.printBlank(title, 49) + PrintBlankUtil.printBlank(writer, 12) + PrintBlankUtil.printBlank(dated, 12) + "│");
+//					
+//			System.out.print("\t│ - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - │\n");
+//		}
+//		System.out.println("\t└────────────────────────────────────────────────────────────────────────────────┘");
+		
+		
+		
+		System.out.println("\n\n\n==================================");
 		for(Map<String, Object> b: bread) {
 			System.out.println(b.get("TO_NUMBER(SUBSTR(MENU_ID,2))") + "." + b.get("MENU_NAME") + "(" + b.get("MENU_PRICE") + "원)");
 		}
-		System.out.println("==================================");
+		System.out.println("==================================\n\n\n");
 		return View.MENU_BREAD_DETAIL;
 	}
 	
@@ -86,13 +110,14 @@ public class MenuService {
 		int menuNum = ScanUtil.nextInt();
 		Map<String, Object> breadDetail = menuDao.breadDetail(menuNum);
 		List<Map<String, Object>> breadReview = menuDao.breadReview(menuNum);
-		System.out.println(breadDetail.get("MENU_DETAIL"));
+		System.out.println("\n" + breadDetail.get("MENU_DETAIL") + "\n\n");
 		
 		int star = 0;
 		int blackStar = 0;
 		
 		for(Map<String, Object> br: breadReview) {
 			star = (int) br.get("REVIEW_STAR");
+			System.out.print(br.get("MEM_NNAME") + "\t"); 
 			for (int i = 0; i < star; i++) {
                 System.out.print("★");
                 blackStar = i;
@@ -105,7 +130,7 @@ public class MenuService {
 			
 		}
 		
-		System.out.println("[1.구매하기 9.뒤로가기 0.홈으로]");
+		System.out.println("\n\n\n[1.구매하기 9.뒤로가기 0.홈으로]");
 		int input = ScanUtil.nextInt();
 		
 		switch(input) {
@@ -192,13 +217,14 @@ public class MenuService {
 		int menuNum = ScanUtil.nextInt();
 		Map<String, Object> cookieDetail = menuDao.cookieDetail(menuNum);
 		List<Map<String, Object>> cookieReview = menuDao.cookieReview(menuNum);
-		System.out.println(cookieDetail.get("MENU_DETAIL"));
+		System.out.println("\n" + cookieDetail.get("MENU_DETAIL") + "\n\n");
 
 
 		int star = 0;
 		int blackStar = 0;
 
 		for (Map<String, Object> cr : cookieReview) {
+			System.out.print(cr.get("MEM_NNAME") + "\t"); 
 			star = (int) cr.get("REVIEW_STAR");
 			for (int i = 0; i < star; i++) {
 				System.out.print("★");
@@ -212,7 +238,7 @@ public class MenuService {
 
 		}
 		
-		System.out.println("[1.구매하기 9.뒤로가기 0.홈으로]");
+		System.out.println("\n\n\n[1.구매하기 9.뒤로가기 0.홈으로]");
 		int input = ScanUtil.nextInt();
 		
 		switch(input) {
@@ -298,13 +324,14 @@ public class MenuService {
 		int menuNum = ScanUtil.nextInt();
 		Map<String, Object> cakeDetail = menuDao.cakeDetail(menuNum);
 		List<Map<String, Object>> cakeReview = menuDao.cakeReview(menuNum);
-		System.out.print(cakeDetail.get("MENU_DETAIL"));
+		System.out.print("\n" + cakeDetail.get("MENU_DETAIL") + "\n\n");
 		System.out.println();
 		
 		int star = 0;
 		int blackStar = 0;
 		
 		for(Map<String, Object> cr: cakeReview) {
+			System.out.print(cr.get("MEM_NNAME") + "\t"); 
 			star = (int) cr.get("REVIEW_STAR");
 			for (int i = 0; i < star; i++) {
                 System.out.print("★");
@@ -318,7 +345,7 @@ public class MenuService {
 			
 		}
 		
-		System.out.println("[1 구매하기 9.뒤로가기 0.홈으로]");
+		System.out.println("\n\n\n[1.구매하기 9.뒤로가기 0.홈으로]");
 		int input = ScanUtil.nextInt();
 		
 		switch(input) {
@@ -402,12 +429,13 @@ public class MenuService {
 		int menuNum = ScanUtil.nextInt();
 		Map<String, Object> drinkDetail = menuDao.drinkDetail(menuNum);
 		List<Map<String, Object>> drinkReview = menuDao.drinkReview(menuNum);
-		System.out.print(drinkDetail.get("MENU_DETAIL"));
+		System.out.print("\n" + drinkDetail.get("MENU_DETAIL") + "\n\n");
 		System.out.println();
 		int star = 0;
 		int blackStar = 0;
 		
 		for(Map<String, Object> dr: drinkReview) {
+			System.out.print(dr.get("MEM_NNAME") + "\t"); 
 			star = (int) dr.get("REVIEW_STAR");
 			for (int i = 0; i < star; i++) {
                 System.out.print("★");
@@ -421,7 +449,7 @@ public class MenuService {
 			
 		}
 		
-		System.out.println("[1.구매하기 9.뒤로가기 0.홈으로]");
+		System.out.println("\n\n\n[1.구매하기 9.뒤로가기 0.홈으로]");
 		int input = ScanUtil.nextInt();
 		
 		switch(input) {
