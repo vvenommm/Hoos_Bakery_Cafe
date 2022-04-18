@@ -35,14 +35,14 @@ public class ManagementService {
 		
 		//MANAGEMENT 관리자 홈
 		public int mngList() {
-			System.out.println("[1.메뉴 관리 2.예약 관리 3.한줄평 관리 4.생산량 관리 5.매출 관리 9.뒤로가기 0.로그아웃]");
+			System.out.println("[1.메뉴 관리 2.예약 관리 3.한줄평 관리 9.뒤로가기 0.로그아웃]");
 			int input =ScanUtil.nextInt();
 			switch(input) {
 			case 1:return View.MNG_MENU; //메뉴 관리
 			case 2:return View.MNG_ORDER; //예약주문 관리
 			case 3:return View.MNG_REVIEW; //한줄평 관리
-			case 4:return View.MNG_BAKING; //생산량 관리
-			case 5:return View.MNG_SALES; //매출 관리
+//			case 4:return View.MNG_BAKING; //생산량 관리
+//			case 5:return View.MNG_SALES; //매출 관리
 			case 9:return View.ADMIN_HOME;
 			case 0:
 				return View.LOGOUT;
@@ -487,6 +487,18 @@ public class ManagementService {
 		
 		//MNG_ORDER 예약 관리 홈
 		public int mngOrder() {
+			int num = 0;
+			List<Map<String, Object>> list = mngDao.newOrder();
+			for(Map<String, Object> order : list) {
+				if(order.get("BUY_APRV").equals("신청")) {
+					num++;
+				}
+			}
+			if(num > 0) {
+			System.out.println("NEW!\n새로운 예약 주문이 " + num + "개 들어왔습니다!!");
+			}else {
+				System.out.println("새로운 예약이 없습니다.");
+			}
 //			System.out.println("<예약 목록>");
 //			System.out.println("예약일\t예약 번호\t수령일\t비고\t예약자\t상태");
 //			System.out.println("--------------------------------");
@@ -502,15 +514,13 @@ public class ManagementService {
 //				}
 //			}
 //			System.out.println("--------------------------------");
-//			System.out.println("[1.조회 2.새로운 예약 확인하기 3.거절한 예약 목록 보기 9.뒤로가기 0.홈으로].");
+			System.out.println("[1.새로운 예약 확인하기 2.거절한 예약 목록 보기 9.뒤로가기 0.홈으로].");
 			
 			int input = ScanUtil.nextInt();
 			switch (input) {
 			case 1:
-				return View.MNG_READ_ORDER; //[1.조회]
-			case 2:
-				return View.MNG_ORDER_APRV; //[2.예약 승인하기]
-			case 3: //[3.거절한 예약 목록 보기]
+				return View.MNG_ORDER_APRV; //[1.예약 승인하기]
+			case 2: //[2.거절한 예약 목록 보기]
 				return View.MNG_ORDER_DENY;
 			case 9: //[9.뒤로가기]
 				return View.MANAGEMENT;
@@ -526,21 +536,20 @@ public class ManagementService {
 		
 		//MNG_ORDER [2.예약 관리] - [1.조회]
 		public int readOrder() {
-			
 			System.out.println("예약 목록에서 조회하려는 예약 번호를 입력해주세요.\n->");
 			int rsvNum = ScanUtil.nextInt();
 			Map<String, Object> order = mngDao.readOrder(rsvNum);
 			
 			System.out.println("┌─────────────────────┐");
-			System.out.println("    예약 번호 : " + order.get("RSV_OD"));
-			System.out.println("    수령일 : " + order.get("RSV_PICKUP"));
+			System.out.println("    예약 번호 : " + order.get("BUY_NO"));
+			System.out.println("    수령일 : " + order.get("BUY_PICKUP"));
 			System.out.println("    주문자 : " + order.get("MEM_ID"));
-			System.out.println("    상태 : " + order.get("RSV_APRV"));
+			System.out.println("    상태 : " + order.get("BUY_APRV"));
 			System.out.println(" ──────────────────────");
-			if(order.get("RSV_ETC") == null) {
+			if(order.get("BUY_ETC") == null) {
 				System.out.println("    비고 : 해당사항 없음");
 			}else {
-			System.out.println("    비고 : " + order.get("RSV_ETC"));
+			System.out.println("    비고 : " + order.get("BUY_ETC"));
 			}
 			System.out.println("└─────────────────────┘");
 			
@@ -553,74 +562,117 @@ public class ManagementService {
 		
 		//MNG_ORDER [2.예약 관리] - [2. 승인하기]
 	      public int orderAprv() {
+	    	 int num = 1;
 	         System.out.println("<NEW 예약 목록>");
-	         System.out.println("예약일\t예약 번호\t수령일\t비고\t예약자\t상태");
+	         System.out.println("번호\t주문일\t주문 번호\t수령일\t기타\t예약자\t상태");
 	         System.out.println("--------------------------------");
 	         List<Map<String, Object>> list = mngDao.newOrder();
-	         for(int i = 0; i < list.size(); i++) {//새 예약 주문 출력
 	            for(Map<String, Object> order : list) {
-	               System.out.print(order.get("RSV_OD") + "\t");
-	               System.out.print(order.get("RSV_PICKUP") + "\t");
-	               System.out.print(order.get("RSV_ETC") + "\t");
+	            	System.out.print(num + "\t");
+	            	System.out.print(order.get("BUY_ORDER") + "\t");
+	               System.out.print(order.get("BUY_NO") + "\t");
+	               System.out.print(order.get("BUY_PICKUP") + "\t");
+	               System.out.print(order.get("BUY_ETC") + "\t");
 	               System.out.print(order.get("MEM_ID") + "\t");
-	               System.out.println(order.get("RSV_APRV") + "\t");
+	               System.out.println(order.get("BUY_APRV") + "\t");
+	               num++;
 	            }
-	         }
 	         System.out.println("--------------------------------");
-	         System.out.println("[1.승인하기 2. 거절하기 0.뒤로가기]");
+	         System.out.println("[1.승인하기 2. 거절하기 9.뒤로가기 0.홈으로]");
 	         int input = ScanUtil.nextInt();
 	         
 	         switch(input) {
 	         case 1:
-	            System.out.println("승인할 주문의 예약 번호를 입력하세요.");
-	            String orderNum = ScanUtil.nextLine();
-	            
-		         for(Map<String, Object> order : list) {
-		           	if(orderNum.equals((String)order.get("RSV_OD"))){
-		           		System.out.println("예약 승인하시겠습니까? [1.네 2.아니오]");
-		           		int agree= ScanUtil.nextInt();
-		           		
-		           		if(agree == 1) {
-		           			mngDao.chgAprv(orderNum);
-		           			return View.MNG_ORDER;
-		           		}else {
-		           			System.out.println("이전 화면으로 이동합니다.");
-		           			return View.MNG_ORDER_APRV;
-		           		}
-		           	}
-		         }
+	               System.out.println("승인할 주문의 번호를 입력하세요.");
+	               int orderNum = ScanUtil.nextInt();
+	               
+	               String buyNo = (String)list.get(orderNum-1).get("BUY_NO");
+	               String memId = (String)list.get(orderNum-1).get("MEM_ID");
+	               
+	               System.out.println("예약 승인하시겠습니까?\n[1.네 2.아니오]");
+	               int agree= ScanUtil.nextInt();
+	               
+	               if(agree == 1) {
+	            	   int result = mngDao.chgAprv(buyNo, memId);
+	            	   if(result == 1) {
+	            		   System.out.println("승인 완료!\n[2.예약 관리] 홈으로 이동합니다.");
+	            		   return View.MNG_ORDER;
+	            	   }else {
+	            		   System.out.println("승인 실패!\n이전 화면으로 이동합니다.");
+	            		   return View.MNG_ORDER_APRV;
+	            	   }
+	                }else {
+	                	System.out.println("이전 화면으로 이동합니다.");
+	                    return View.MNG_ORDER_APRV;
+	                       }
 	         case 2:
-	        	 return View.MNG_ORDER_DENY;
-	         case 0:
+	        		System.out.println("거절할 주문의 번호를 입력하세요.");
+	                orderNum = ScanUtil.nextInt();
+	                
+	                buyNo = (String)list.get(orderNum-1).get("BUY_NO");
+	                memId = (String)list.get(orderNum-1).get("MEM_ID");
+	                
+	    	   		System.out.println("예약 거절하시겠습니까? [1.네 2.아니오]");
+	    	    	agree= ScanUtil.nextInt();
+	    	           		
+	    	    	if(agree == 1) {
+	    	    		int result = mngDao.chgDeny(buyNo, memId);
+	    	    		if(result == 1) {
+	    	    		System.out.println("거절 완료!\n[2.예약 관리] 홈으로 이동합니다.");
+	    	           	return View.MNG_ORDER;
+	    	    		}else {
+	    	    		System.out.println("승인 실패!\n이전 화면으로 이동합니다.");
+	    	    		return View.MNG_ORDER_APRV;
+	    	    		}
+	    	        }else {
+	    	           	System.out.println("이전 화면으로 이동합니다.");
+	    	         	return View.MNG_ORDER_APRV;
+	    	        }
+	         case 9:
 	        	 return View.MNG_ORDER;
+	         case 0:
+	        	 
             }
 			return View.MNG_ORDER_APRV;
          }
 
+	      
 	      /////////////////////////////////////////////////////////////////////////////////
 	      
-	  	public int orderDenied() {
-	  		System.out.println("거절할 주문의 예약 번호를 입력하세요.");
-            String orderNum = ScanUtil.nextLine();
-            
-            List<Map<String, Object>> list = mngDao.newOrder();
-            
-	         for(Map<String, Object> order : list) {
-	           	if(orderNum.equals((String)order.get("RSV_OD"))){
-	           		System.out.println("예약 거절하시겠습니까? [1.네 2.아니오]");
-	           		int agree= ScanUtil.nextInt();
-	           		
-	           		if(agree == 1) {
-	           			mngDao.chgDeny(orderNum);
-	           			return View.MNG_ORDER;
-	           		}else {
-	           			System.out.println("이전 화면으로 이동합니다.");
-	           			return View.MNG_ORDER_APRV;
-	           		}
-	           	}
-	         }
-	         return View.MNG_ORDER;
-		}
+	      
+//	  	public int orderDenied() {
+//	  		String cartNo = "";
+//	  		List<Map<String, Object>> orderDenied = mngDao.orderDenied();
+//	  		for(Map<String, Object> row : orderDenied) {
+//	  			System.out.println("┌─────────────────────┐");
+//				System.out.println(" 예약 번호\t수령일\t주문자\t상태");
+//				System.out.println(" " + row.get("BUY_NO") + "\t" + row.get("BUY_PICKUP") + "\t" + row.get("MEM_ID") + "\t" + row.get("BUY_APRV"));
+//				System.out.println(" ──────────────────────");
+//				if(row.get("BUY_ETC") == null) {
+//					System.out.println("    비고 : 해당사항 없음");
+//				}else {
+//				System.out.println("    비고 : " + row.get("BUY_ETC"));
+//				}
+//				System.out.println("└─────────────────────┘");
+//	  		}
+//	  		
+//	  		System.out.println("조회하려는 주문 예약의 번호를 입력해주세요./\n->");
+//	  		int input = ScanUtil.nextInt();
+//	  		
+//	  		
+//            
+//	   		System.out.println("예약 거절하시겠습니까? [1.네 2.아니오]");
+//	    	int agree= ScanUtil.nextInt();
+//	           		
+//	    	if(agree == 1) {
+//	    		mngDao.orderDenied(buyNo, memId);
+//	           	return View.MNG_ORDER;
+//	        }else {
+//	           	System.out.println("이전 화면으로 이동합니다.");
+//	         	return View.MNG_ORDER_APRV;
+//	        }
+//		}
+	  	
 
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
@@ -630,39 +682,60 @@ public class ManagementService {
 		
 		//MNG_REVIEW 한줄평 관리
 		public int mngReview() {
-			return 0;
-		}
+			List<Map<String, Object>> list = mngDao.reviewList();
+			int star = 0;
+			int blackStar = 0;
+	         for (Map<String, Object> review : list) {
+	            System.out.print(review.get("REVIEW_DATE") + "\t");
+	            System.out.print(review.get("BUY_NO") + "\t");
+	            System.out.print(review.get("MEM_NNAME") + "\t");
+	            System.out.print(review.get("MENU_NAME") + "\t");
+	            star = (int) review.get("REVIEW_STAR");
+	            for (int i = 0; i < star; i++) {
+	               System.out.print("★");
+	               blackStar = i;
+	            }
+	               for(int j = 0; j < 4-blackStar; j++) {
+	            	   System.out.print("☆");
+	            }
+//	               System.out.println();
+	               System.out.println("\t" + review.get("REVIEW_COMMENT") + "\t");
+	         }
+	         System.out.println("\n\n[1.한줄평 삭제 9.돌아가기 0.홈으로 ]");
+	            int input = ScanUtil.nextInt();
+	            switch (input) {
+	            case 1:
+	               System.out.println("삭제할 한줄평의 번호를 입력하세요.");
+	               String reviewNum = ScanUtil.nextLine();
+	               for (Map<String, Object> review : list) {
+	                  if (reviewNum.contentEquals((String) review.get("BUY_NO"))) {
+	                     System.out.println("삭제하시겠습니까? [1.네 2.아니오]");
+	                     int agree = ScanUtil.nextInt();
+	                     if (agree == 1) {
+	                        mngDao.reviewDelete(reviewNum);
+	                        System.out.println("삭제 성공!");
+	                        return View.MNG_REVIEW;
+	                     } else {
+	                        System.out.println("이전 화면으로 돌아갑니다.");
+	                        
+	                     }
+
+	                  }
+	               }
+	            case 9:
+	               return View.MANAGEMENT;
+	            
+	            case 0:
+	               return View.ADMIN_HOME;
+
+	            }
+
+	            return View.ADMIN_HOME;
+	         }
 
 
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
-		//MNG_BAKING [4.생산량 관리]
 		
-		
-		//MNG_BAKING 생산량 관리
-		public int mngBaking() {
-			return 0;
-		}
-
-
-		/////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////////////////
-		//MNG_SALES [5.매출 관리]
-		
-		
-		//MNG_SALES 매출 관리
-		public int mngSales() {
-			return 0;
-		}
-
-
-		
-
-		
-		/////////////////////////////////////////////////////////////////////////////////
-
-		
-
 }
