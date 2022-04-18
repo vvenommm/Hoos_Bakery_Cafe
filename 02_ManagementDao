@@ -324,16 +324,16 @@ public class ManagementDao {
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
-	//MNG_REVIEW [3.한줄평 관리]
 	
 	
 	//MNG_REVIEW [3.한줄평 관리]
 	   
 	   public List<Map<String,Object>> reviewList() { //한줄평 보기
-	      String sql = "SELECT R.BUY_NO BUY_NO, R.MEM_ID MEM_ID, R.MENU_ID MENU_ID, R.REVIEW_DATE REVIEW_DATE, R.REVIEW_COMMENT REVIEW_COMMENT, R.REVIEW_STAR REVIEW_STAR, M.MEM_NNAME MEM_NNAME, MN.MENU_NAME MENU_NAME FROM B_REVIEW R, B_MEMBER M, B_MENU MN WHERE R.MEM_ID = M.MEM_ID AND MN.MENU_ID = R.MENU_ID ";
+	      String sql = "SELECT R.BUY_NO BUY_NO, R.MEM_ID MEM_ID, R.MENU_ID MENU_ID, TO_CHAR(R.REVIEW_DATE, 'YY/MM/DD') REVIEW_DATE, R.REVIEW_COMMENT REVIEW_COMMENT, R.REVIEW_STAR REVIEW_STAR, M.MEM_NNAME MEM_NNAME, MN.MENU_NAME MENU_NAME FROM B_REVIEW R, B_MEMBER M, B_MENU MN WHERE R.MEM_ID = M.MEM_ID AND MN.MENU_ID = R.MENU_ID ";
 	      return JDBCUtil.selectList(sql);
 
 	   }
+	   
 	   public int reviewDelete(String reviewNum) { //한줄평 삭제
 	      String sql = "DELETE FROM B_REVIEW WHERE BUY_NO =?";
 	      List<Object>param = new ArrayList<Object>();
@@ -380,12 +380,5 @@ public class ManagementDao {
 
 	      
 	   //MNG_SALES [5.매출 관리]
-	
-	
-	
-	
-
-	
-
 
 } 
