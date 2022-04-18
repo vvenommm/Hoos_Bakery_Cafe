@@ -34,7 +34,6 @@ private MypageService() {
 	
 	//[1.마이페이지] 홈
 	public int myPage() {
-		//가용 적립금이 ㅇㅇ점 있습니다. / 예약 주문이 n건 있습니다.
 		System.out.println("[1.내정보 보기 2.내 예약 현황 3.내가 쓴 한줄평 0.홈으로]");
 		System.out.print("선택하기: ");
 		int input = ScanUtil.nextInt();
@@ -73,7 +72,6 @@ private MypageService() {
 	         System.out.println("이름: " + userService.LoginMember.get("MEM_NAME"));
 	         System.out.println("닉네임: " + userService.LoginMember.get("MEM_NNAME"));
 	         System.out.println("연락처: " + userService.LoginMember.get("MEM_NUMBER"));
-	         System.out.println("적립금: " + userService.LoginMember.get("MEM_MILEAGE") + "원");
 	         System.out.println("===================");
 	         System.out.println(" [1.연락처 수정 2. 비밀번호 수정  0.뒤로가기] ");
 	         System.out.print("선택하기: ");
@@ -173,33 +171,45 @@ private MypageService() {
 	        	   System.out.print("조회할 번호를 선택해 주세요. : ");
 	                 int input = ScanUtil.nextInt();
 	                 Map<String, Object>map = list.get(input -1);
+	                 int cartNo = (int)map.get("CART_NO");
+	                 
 	                 System.out.println("\t      <상세 페이지>");
-	                 System.out.println("사용한 적립금\t적립된 적립금\t수령일\t비고");
+	                 System.out.println("예약날짜\t주문번호\t수령일\t상태\t비고");
 	                 System.out.println("------------------------------------------");
-	                    System.out.print(map.get("BUY_MUSED") + "\t\t");
-	                      System.out.print(map.get("BUY_MWILL") + "\t");
-	                      System.out.print(map.get("BUY_PICKUP") + "\t");
-	                      System.out.println(map.get("BUY_ETC") + "\t");
-	                      System.out.println("------------------------------------------");
-	                     System.out.println("삭제하시겠습니까? ");
-	                     System.out.print("[1.네 2.아니오]");
+	                 System.out.print(map.get("BUY_DATE") + "\t");
+	                 System.out.print(map.get("BUY_NO") + "\t");
+	                 System.out.print(map.get("BUY_PICKUP") + "\t");
+	                 System.out.print(map.get("BUY_APRV") + "\t");
+	                 System.out.println(map.get("BUY_ETC") + "\t");
+	                 System.out.println("------------------------------------------");
+	                 
+//	                 for(Map<String, Object> row : mypageDao.myReservDetail(cartNo)) {
+//	                 System.out.println("메뉴명\t수량\t");
+//	                 System.out.print(map.get("MENU_NAME") + "\t\t" + map.get("CART_PRICE") + "\t"+ map.get("CART_QTY") + "개");
+//	                 if(map.get("MENU_NAME").equals("총합")) {
+//	                	 System.out.println("------------------------------------------");
+//	                	 System.out.print(map.get("MENU_NAME") + "\t\t" + map.get("CART_PRICE") + "\t"+ map.get("CART_QTY") + "개");
+//	                 }
+//	                 }
+	                 System.out.println("예약을 취소하시겠습니까? ");
+	                 System.out.print("[1.네 2.아니오]");
 	                     int sel = ScanUtil.nextInt();
 	                     if(sel == 1) {
 	                        mypageDao.cancleReserv();
-	                        System.out.println("삭제 하였습니다.");
-	                        return View.MYPAGE_RESERVATION;
+	                        System.out.println("취소 하였습니다.");
+	                        return View.MYPAGE;
 	                     }else if(sel ==2) {
-	                        System.out.println("예약 매뉴로 돌아갑니다.");
+	                        System.out.println("예약 메뉴로 돌아갑니다.");
 	                        return View.MYPAGE_RESERVATION;
 	                     }else {
-	                        System.out.println("잘못입력했습니다. 예약 메뉴로 돌아갑니다.");
+	                        System.out.println("잘못입력했습니다. 다시입력해 주세요.");
 	                        return View.MYPAGE_RESERVATION;
 	                     }
 	                case 0 : 
 	                   return View.MYPAGE;
 	                default : 
 	                   System.out.println("잘못입력하였습니다. 다시입력해 주세요.");
-	                   return View.MYPAGE;
+	                   return View.MYPAGE_RESERVATION;
 	                }
 	        }
 
@@ -207,50 +217,50 @@ private MypageService() {
 /////////////////////////////////////////////////////////////////////////////////
 
 	
-	//[1.마이페이지] -> [3.내가 쓴 한줄평]
-	public int myReview() {
-		
-		String memId = (String)userService.LoginMember.get("MEM_ID");
-	      List<Map<String, Object>> myReview = mypageDao.bringReview(memId);
-	      int star = 0;
-	      int blackStar = 0;
-	      for(Map<String, Object> r : myReview) {
-	         System.out.println("주문번호: " + r.get("BUY_NO") + "\t");
-	         System.out.println("리뷰작성일: " + r.get("REVIEW_DATE") + "\t");
-	         System.out.println("제품명: " + r.get("MENU_NAME") +"\t");
-	         System.out.println("내용: " + r.get("REVIEW_COMMENT") + "\t");
-	         star = (int) r.get("REVIEW_STAR");
-	         for (int i = 0; i < star; i++) {
-	                System.out.print("★");
-	                blackStar = i;
-	             }
-	                for(int j = 0; j < 4-blackStar; j++) {
-	                   System.out.print("☆");
-	             }
-	             System.out.println();
-	         System.out.println("======================================");
-	      }
+	 //[1.마이페이지] -> [3.내가 쓴 한줄평]
+	   public int myReview() {
+	      
+	      String memId = (String)userService.LoginMember.get("MEM_ID");
+	         List<Map<String, Object>> myReview = mypageDao.bringReview(memId);
+	         int star = 0;
+	         int blackStar = 0;
+	         for(Map<String, Object> r : myReview) {
+	            System.out.println("주문번호: " + r.get("BUY_NO") + "\t");
+	            System.out.println("리뷰작성일: " + r.get("REVIEW_DATE") + "\t");
+	            System.out.println("제품명: " + r.get("MENU_NAME") +"\t");
+	            System.out.println("내용: " + r.get("REVIEW_COMMENT") + "\t");
+	            star = (int) r.get("REVIEW_STAR");
+	            for (int i = 0; i < star; i++) {
+	                   System.out.print("★");
+	                   blackStar = i;
+	                }
+	                   for(int j = 0; j < 4-blackStar; j++) {
+	                      System.out.print("☆");
+	                }
+	                System.out.println();
+	            System.out.println("======================================");
+	         }
 
-		System.out.println("1.돌아가기 0.홈으로");
-		int input = ScanUtil.nextInt();
-		switch(input) {
-		case 1:
-			return View.MYPAGE;
-		case 0:
-			if(userService.LoginMember.size() > 0) {
-			if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
-				return View.ADMIN_HOME;
-			}else{ //회원 홈
-				return View.MEM_HOME;
-			}}else { //비회원 홈
-				return View.HOME;
-			}
-		}
-		return View.MYPAGE;
-		
-	}
+	      System.out.println("9.돌아가기 0.홈으로");
+	      int input = ScanUtil.nextInt();
+	      switch(input) {
+	      case 9:
+	         return View.MYPAGE;
+	      case 0:
+	         if(userService.LoginMember.size() > 0) {
+	         if (userService.LoginMember.get("MEM_ID").equals("admin")){ //관리자 홈
+	            return View.ADMIN_HOME;
+	         }else{ //회원 홈
+	            return View.MEM_HOME;
+	         }}else { //비회원 홈
+	            return View.HOME;
+	         }
+	      }
+	      return View.MYPAGE;
+	      
 	
 	
 /////////////////////////////////////////////////////////////////////////////////
 
 }
+	   }
