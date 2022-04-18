@@ -74,11 +74,4 @@ public interface View {
 	//한줄평 관리
 	int MNG_REVIEW = 73; //한줄평 관리
 	
-	//생산량 관리
-	int MNG_BAKING = 74; //생산량 관리
-	
-	//매출 관리
-	int MNG_SALES = 75; //매출 관리
-	
-	//04.10 정후: 우리 최소 이만큼이 필요하고 작업하다보면 더 생길 수도 있어요
 }
