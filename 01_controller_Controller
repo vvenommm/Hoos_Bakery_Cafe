@@ -107,7 +107,7 @@ public class Controller {
 			case View.MNG_ORDER: view = mngService.mngOrder(); break; //예약주문 관리
 			case View.MNG_READ_ORDER: view = mngService.readOrder(); break; //예약주문 관리
 			case View.MNG_ORDER_APRV: view = mngService.orderAprv(); break; //예약 승인 관리
-			case View.MNG_ORDER_DENY: view = mngService.orderDenied(); break; //거절 예약 관리
+//			case View.MNG_ORDER_DENY: view = mngService.orderDenied(); break; //거절 예약 관리
 			
 /////////////////////////////////////////////////////////////////////////////////
 		
@@ -115,11 +115,11 @@ public class Controller {
 			
 /////////////////////////////////////////////////////////////////////////////////
 		
-			case View.MNG_BAKING: view = mngService.mngBaking(); break; //당일 생산량 관리
+//			case View.MNG_BAKING: view = mngService.mngBaking(); break; //당일 생산량 관리
 			
 /////////////////////////////////////////////////////////////////////////////////
 		
-			case View.MNG_SALES: view = mngService.mngSales(); break; //매출 관리
+//			case View.MNG_SALES: view = mngService.mngSales(); break; //매출 관리
 
 			}
 		}
@@ -142,8 +142,10 @@ public class Controller {
 		case 0:
 			System.out.println("프로그램을 종료합니다.");
 			System.exit(0);
+		default :
+			System.out.println("없는 항목입니다.\n다시 입력해주세요.");
+			return View.ADMIN_HOME;
 		}
-		return View.HOME;
 	}
 
 	//회원용 홈
@@ -159,8 +161,10 @@ public class Controller {
 		case 0:
 			System.out.println("프로그램을 종료합니다.");
 			System.exit(0);
+		default :
+			System.out.println("없는 항목입니다.\n다시 입력해주세요.");
+			return View.MEM_HOME;
 		}
-		return View.HOME;
 	}
 
 	//비회원용 홈
@@ -176,8 +180,10 @@ public class Controller {
 		case 0:
 			System.out.println("프로그램을 종료합니다.");
 			System.exit(0);
+		default :
+			System.out.println("없는 항목입니다.\n다시 입력해주세요.");
+			return View.HOME;
 		}
-		return View.HOME;
 	}
 
 }
