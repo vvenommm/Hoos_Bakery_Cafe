@@ -37,7 +37,7 @@ public class MenuDao {
 	
 	//빵 상세화면
 	public Map<String, Object> breadDetail(int menuNum){
-		String sql = "SELECT MENU_ID, MENU_NAME, MENU_PRICE, MENU_DETAIL, MENU_ACTIVE FROM B_MENU WHERE TO_NUMBER(SUBSTR(MENU_ID,2)) =? AND MENU_ID LIKE 'a%'";
+		String sql = "SELECT MENU_ID, MENU_NAME, MENU_PRICE, MENU_DETAIL, MENU_ACTIVE, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin') MEM_NNAME FROM B_MENU WHERE TO_NUMBER(SUBSTR(MENU_ID,2)) =? AND MENU_ID LIKE 'a%'";
 		List<Object>param = new ArrayList<Object>();
 		param.add(menuNum);
 		
@@ -48,9 +48,25 @@ public class MenuDao {
 /////////////////////////////////////////////////////////////////////////////////
 
 	
+	//빵 리뷰&별점
+	
+		public List<Map<String, Object>> breadReview(int menuNum){
+			String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR \r\n" + 
+					" FROM B_MENU M, B_REVIEW R\r\n" + 
+					" WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'a%' AND M.MENU_ID = R.MENU_ID";
+			List<Object>param = new ArrayList<Object>();
+			param.add(menuNum);
+			
+			return JDBCUtil.selectList(sql, param);
+		}	
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+	
 	//쿠키 목록
 	public List<Map<String, Object>> cookieList(){
-		String sql = "SELECT MENU_NAME, MENU_PRICE FROM B_MENU WHERE MENU_ID LIKE 'b%'";
+		String sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID,2)), MENU_NAME, MENU_PRICE FROM B_MENU WHERE MENU_ID LIKE 'b%'";
 		
 		return JDBCUtil.selectList(sql);
 	}
@@ -61,7 +77,7 @@ public class MenuDao {
 	
 	//쿠키 상세화면
 	public Map<String, Object> cookieDetail(int menuNum){
-		String sql = "SELECT MENU_ID, MENU_NAME, MENU_PRICE, MENU_DETAIL, MENU_ACTIVE FROM B_MENU WHERE TO_NUMBER(SUBSTR(MENU_ID,2)) =? AND MENU_ID LIKE 'b%'";
+		String sql = "SELECT MENU_ID, MENU_NAME, MENU_PRICE, MENU_DETAIL, MENU_ACTIVE, (SELECT MEM_NNAME FROM B_MEMBER WHERE MEM_ID = 'admin') FROM B_MENU WHERE TO_NUMBER(SUBSTR(MENU_ID,2)) =? AND MENU_ID LIKE 'b%'";
 		List<Object>param = new ArrayList<Object>();
 		param.add(menuNum);
 		
@@ -70,11 +86,27 @@ public class MenuDao {
 
 	
 /////////////////////////////////////////////////////////////////////////////////
+
+	
+	//쿠키 리뷰&별점
+	
+		public List<Map<String, Object>> cookieReview(int menuNum){
+			String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR " + 
+					" FROM B_MENU M, B_REVIEW R\r\n" + 
+					" WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'b%' AND M.MENU_ID = R.MENU_ID";
+			List<Object>param = new ArrayList<Object>();
+			param.add(menuNum);
+			
+			return JDBCUtil.selectList(sql, param);
+		}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
 	
 	
 	//케이크 목록
 	public List<Map<String,Object>> cakeList(){
-		String sql = "SELECT MENU_NAME, MENU_PRICE FROM B_MENU WHERE MENU_ID LIKE 'c%'";
+		String sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID,2)), MENU_NAME, MENU_PRICE FROM B_MENU WHERE MENU_ID LIKE 'c%'";
 		
 		return JDBCUtil.selectList(sql);
 	}
@@ -95,11 +127,27 @@ public class MenuDao {
 	
 
 /////////////////////////////////////////////////////////////////////////////////
+
+	
+	//케이크 리뷰&별점
+	
+	public List<Map<String, Object>> cakeReview(int menuNum){
+		String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR \r\n" + 
+				" FROM B_MENU M, B_REVIEW R\r\n" + 
+				" WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'c%' AND M.MENU_ID = R.MENU_ID";
+		List<Object>param = new ArrayList<Object>();
+		param.add(menuNum);
+		
+		return JDBCUtil.selectList(sql, param);
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
 	
 	
 	//음료 목록
 	public List<Map<String,Object>> drinkList(){
-		String sql = "SELECT MENU_NAME, MENU_PRICE FROM B_MENU WHERE MENU_ID LIKE 'd%'";
+		String sql = "SELECT TO_NUMBER(SUBSTR(MENU_ID,2)), MENU_NAME, MENU_PRICE FROM B_MENU WHERE MENU_ID LIKE 'd%'";
 		
 		return JDBCUtil.selectList(sql);
 	}
@@ -115,6 +163,22 @@ public class MenuDao {
 		param.add(menuNum);
 		
 		return JDBCUtil.selectOne(sql, param);
+	}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////
+
+	
+	//음료 리뷰&별점
+	
+	public List<Map<String, Object>> drinkReview(int menuNum){
+		String sql = "SELECT R.REVIEW_COMMENT, R.REVIEW_STAR \r\n" + 
+				" FROM B_MENU M, B_REVIEW R\r\n" + 
+				" WHERE TO_NUMBER(SUBSTR(M.MENU_ID,2)) =? AND M.MENU_ID LIKE 'd%' AND M.MENU_ID = R.MENU_ID";
+		List<Object>param = new ArrayList<Object>();
+		param.add(menuNum);
+		
+		return JDBCUtil.selectList(sql, param);
 	}
 	
 	
