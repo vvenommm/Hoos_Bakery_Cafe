@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class JDBCUtil {
 
-	private static String url = "jdbc:oracle:thin:@112.220.114.130:1521:xe";
-	private static String user = "TEAM4_202203S ";
-	private static String password = "java";
+	private static String url = "jdbc:oracle:thin:@:xe";
+	private static String user = "ID ";
+	private static String password = "PASSWORD";
 	
 	private static Connection con = null;
 	private static PreparedStatement ps = null;
@@ -222,7 +222,3 @@ public class JDBCUtil {
 	}
 	
 }
-
-
-
-
